@@ -7,21 +7,40 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://tabus-js.vercel.app',
+
   integrations: [starlight({
-			title: 'My Docs',
+			title: 'tabus-js',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
 			sidebar: [
-          {
-              label: 'Guides',
-              items: [
-                  // Each item here is one entry in the navigation menu.
-                  { label: 'Example Guide', slug: 'guides/example' },
-              ],
-          },
-          {
-              label: 'Reference',
-              items: [{ autogenerate: { directory: 'reference' } }],
-          },
+        {
+            label: 'Getting started',
+            items: [
+                { label: 'Introducción', slug: 'docs/getting-started/introduccion' },
+                { label: 'Instalación', slug: 'docs/getting-started/instalacion' },
+                { label: 'Quick start', slug: 'docs/getting-started/quick-start' },
+            ],
+        },
+        {
+            label: 'Guías',
+            items: [
+                { label: 'Conceptos', slug: 'docs/guias/conceptos' },
+                { label: 'Throttle', slug: 'docs/guias/throttle' },
+                { label: 'React', slug: 'docs/guias/react' },
+            ],
+        },
+        {
+            label: 'API',
+            items: [
+                { label: 'tabus', slug: 'docs/api/tabus' },
+            ],
+        },
+        {
+            label: 'Ejemplos',
+            items: [
+                { label: 'Ejemplos', slug: 'docs/ejemplos' },
+            ],
+        },
 			],
   }), react()],
 
