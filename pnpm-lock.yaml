@@ -38,6 +38,9 @@ importers:
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
+      tabus-js:
+        specifier: ^0.2.2
+        version: 0.2.2
       tailwindcss:
         specifier: ^4.3.2
         version: 4.3.2
@@ -2024,6 +2027,10 @@ packages:
     resolution: {integrity: sha512-XDpWUOPC6FEibaLzjfe0ucaV0YrOjYotGJO1WpF0Zd+n6ZGEQUsSugaoLq9QkEZtAfQIxT42UChcssDVPP3+/w==}
     engines: {node: '>=16'}
     hasBin: true
+
+  tabus-js@0.2.2:
+    resolution: {integrity: sha512-sEGY0k1LDpgJ8rWHfqXvtv4bEibzWNG8zbJ3byhY0Yz++NpXUB2rwrqdvIhZWBWeOaw1lVV9RIl6ifHjKTz33g==}
+    engines: {node: '>=18'}
 
   tailwindcss@4.3.2:
     resolution: {integrity: sha512-WtctNNSH8A9jlMIqxzuYumOHU5uGZyRv0Q5svQl+oEPy5w84YpBxdb7MdqyiSPQge5jTJ6zFQLq0PFygdccSBA==}
@@ -4812,6 +4819,8 @@ snapshots:
       csso: 5.0.5
       picocolors: 1.1.1
       sax: 1.6.0
+
+  tabus-js@0.2.2: {}
 
   tailwindcss@4.3.2: {}
 
