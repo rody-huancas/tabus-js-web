@@ -8,34 +8,66 @@
   --font-sans: "Inter Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --color-brand-50: #f2f6ff;
-  --color-brand-100: #e2eaff;
-  --color-brand-200: #c7d6ff;
-  --color-brand-300: #a0b8ff;
-  --color-brand-400: #7690ff;
-  --color-brand-500: #4f66ff;
-  --color-brand-600: #3646e6;
-  --color-brand-700: #2a35b4;
-  --color-brand-800: #232c8c;
-  --color-brand-900: #1d2570;
+  --color-brand-50:  #eef5fd;
+  --color-brand-100: #d6e6fa;
+  --color-brand-200: #b0cef5;
+  --color-brand-300: #7fadee;
+  --color-brand-400: #4e8ae4;
+  --color-brand-500: #2e7de0;
+  --color-brand-600: #1f66c4;
+  --color-brand-700: #1a4f99;
+  --color-brand-800: #1a4179;
+  --color-brand-900: #17335e;
 
-  --color-accent: #ff6b4a;
+  --color-accent-50:  #e6faf3;
+  --color-accent-100: #c2f2e2;
+  --color-accent-200: #8ce6c8;
+  --color-accent-300: #4fd6ab;
+  --color-accent-400: #27c79e;
+  --color-accent-500: #14ab86;
+  --color-accent-600: #0d8c6d;
+  --color-accent-700: #0f7059;
+  --color-accent-800: #115a49;
+  --color-accent-900: #0f4a3c;
 
   --color-on-accent: #ffffff;
 }
 
 :root {
-  --indigo-glow: rgb(54 70 230 / 35%);
-  --indigo-glow-hover: rgb(54 70 230 / 50%);
-  --indigo-glow-active: rgb(54 70 230 / 22%);
+  --brand-glow: rgb(31 102 196 / 35%);
+  --brand-glow-hover: rgb(31 102 196 / 50%);
+  --brand-glow-active: rgb(31 102 196 / 22%);
 
-  --indigo-glow-subtle: rgb(54 70 230 / 16%);
-  --indigo-glow-subtle-hover: rgb(54 70 230 / 28%);
-  --indigo-glow-subtle-active: rgb(54 70 230 / 12%);
+  --brand-glow-subtle: rgb(31 102 196 / 16%);
+  --brand-glow-subtle-hover: rgb(31 102 196 / 28%);
+  --brand-glow-subtle-active: rgb(31 102 196 / 12%);
 }
 
 html {
   font-family: var(--font-sans);
+}
+
+/*
+ * Hides the hero's GSAP-animated elements for the first frame so there's no
+ * flash of fully-visible content before the entrance timeline sets its own
+ * "from" styles. Toggled by an inline blocking script in Landing.astro and
+ * removed by hero.animations.ts once the timeline actually starts.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html.hero-anim-pending .hero-badge,
+  html.hero-anim-pending .hero-headline span,
+  html.hero-anim-pending .hero-subhead,
+  html.hero-anim-pending .hero-ctas,
+  html.hero-anim-pending .hero-snippet,
+  html.hero-anim-pending .hero-stats > *,
+  html.hero-anim-pending .hero-browser,
+  html.hero-anim-pending .hero-bubble,
+  html.hero-anim-pending .hero-code-card,
+  html.hero-anim-pending .hero-event,
+  html.hero-anim-pending .hero-event-2,
+  html.hero-anim-pending .hero-scroll {
+    opacity: 0;
+  }
 }
 
 body {
