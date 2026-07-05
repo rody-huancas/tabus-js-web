@@ -1,5 +1,10 @@
 ---
 import { Icon } from "astro-icon/components";
+
+const response = await fetch("https://registry.npmjs.org/tabus-js");
+const pkg = await response.json();
+
+const version = pkg["dist-tags"].latest;
 ---
 
 <p
@@ -9,18 +14,18 @@ import { Icon } from "astro-icon/components";
     <span
       class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60"
     ></span>
-    <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
+    <span class="relative inline-flex h-2 w-2 rounded-full bg-accent-500 animate-pulse"></span>
   </span>
-  v0.1 · BroadcastChannel nativo
+  v{version} · MIT
 </p>
 
 <h1
   class="hero-headline font-display text-[clamp(2.75rem,6.5vw,5rem)] leading-[0.95] font-extrabold tracking-[-0.03em] text-brand-900"
 >
   <span class="block">Sincroniza</span>
-  <span class="block">
+  <span class="block my-2">
     tus
-    <span class="relative mx-1 inline-block">
+    <span class="relative mx-2 inline-block rotate-6">
       <span class="relative z-10">pestañas</span>
       <span
         class="absolute -inset-x-2 -inset-y-1 z-0 -skew-x-2 rounded-sm bg-brand-300/50"
@@ -37,11 +42,11 @@ import { Icon } from "astro-icon/components";
   sin configuración extra.
 </p>
 
-<div class="hero-ctas mt-7 flex flex-wrap items-center gap-4">
+<div class="hero-ctas mt-7 flex flex-col sm:flex-row items-center gap-4">
   <a
     id="hero-cta"
     href="/docs/getting-started/introduccion"
-    class="group inline-flex items-center gap-2.5 rounded-md bg-brand-600 px-8 py-3 text-base font-semibold text-on-accent shadow-[0_10px_36px_-6px_var(--indigo-glow)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_14px_44px_-6px_var(--indigo-glow-hover)] active:translate-y-0 active:shadow-[0_6px_20px_-6px_var(--indigo-glow-active)] motion-reduce:hover:translate-y-0"
+    class="w-full sm:w-auto group inline-flex items-center justify-center gap-2.5 rounded-md bg-brand-600 px-8 py-3 text-base font-semibold text-on-accent shadow-[0_10px_36px_-6px_var(--brand-glow)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_14px_44px_-6px_var(--brand-glow-hover)] active:translate-y-0 active:shadow-[0_6px_20px_-6px_var(--brand-glow-active)] motion-reduce:hover:translate-y-0"
   >
     Empezar ahora
     <Icon
@@ -54,7 +59,7 @@ import { Icon } from "astro-icon/components";
     href="https://www.npmjs.com/package/tabus-js"
     target="_blank"
     rel="noreferrer"
-    class="inline-flex items-center gap-2 rounded-md border border-brand-300/70 bg-white/60 px-6 py-3 text-base font-semibold text-brand-700 backdrop-blur-sm transition-colors hover:border-brand-400 hover:bg-white hover:text-brand-900"
+    class="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-md border border-brand-300/70 bg-white/60 px-6 py-3 text-base font-semibold text-brand-700 backdrop-blur-sm transition-colors hover:border-brand-400 hover:bg-white hover:text-brand-900"
   >
     <Icon name="simple-icons:npm" class="h-5 w-5" />
     npm
