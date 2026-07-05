@@ -1,0 +1,91 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div
+  class="feature-visual relative mb-7 flex flex-1 min-h-40 items-center justify-center overflow-hidden rounded-2xl bg-brand-50/60 ring-1 ring-brand-900/5"
+>
+  <div class="visual-pattern absolute inset-0" aria-hidden="true"></div>
+
+  <div
+    class="pointer-events-none absolute -top-6 -left-6 h-32 w-32 rounded-full bg-brand-300/20 blur-[60px]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative flex flex-col items-center gap-2.5" aria-hidden="true">
+    <div
+      class="fallback-bc relative flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-brand-600 shadow-sm ring-1 ring-brand-900/5"
+    >
+      <Icon name="lucide:radio-tower" class="h-4 w-4" />
+      BroadcastChannel
+      <span
+        class="fallback-strike pointer-events-none absolute inset-x-4 top-1/2 h-px origin-left scale-x-0 bg-brand-400"
+      >
+      </span>
+    </div>
+
+    <Icon
+      name="lucide:arrow-down"
+      class="fallback-arrow h-5 w-5 text-brand-300"
+    />
+    <div
+      class="fallback-mem flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-sm font-semibold text-brand-700 opacity-60 ring-1 ring-brand-900/5"
+    >
+      <Icon name="lucide:hard-drive" class="h-4 w-4" />
+      Memoria
+    </div>
+  </div>
+</div>
+
+<script>
+  import { gsap } from "gsap";
+  import { initReducedMotionLoop } from "../features.animations";
+
+  const initLoop = () => {
+    return initReducedMotionLoop(() => {
+      const fbBc     = document.querySelector<HTMLElement>(".fallback-bc");
+      const fbStrike = document.querySelector<HTMLElement>(".fallback-strike");
+      const fbArrow  = document.querySelector<HTMLElement>(".fallback-arrow");
+      const fbMem    = document.querySelector<HTMLElement>(".fallback-mem");
+
+      if (!fbBc || !fbStrike || !fbArrow || !fbMem) return;
+
+      const tl = gsap
+        .timeline({ repeat: -1, repeatDelay: 1.2 })
+        .to(fbStrike, { scaleX: 1, duration: 0.4, ease: "power2.inOut" })
+        .to(fbBc, { opacity: 0.5, duration: 0.3 }, "<")
+        .to(fbArrow, { y: 3, repeat: 1, yoyo: true, duration: 0.2 }, "<")
+        .to(
+          fbMem,
+          { opacity: 1, scale: 1.05, duration: 0.3, ease: "back.out(2)" },
+          "-=0.1",
+        )
+        .to(fbMem, { scale: 1, duration: 0.2 })
+        .to({}, { duration: 1 })
+        .to(fbStrike, { scaleX: 0, duration: 0.3 })
+        .to(fbBc, { opacity: 1, duration: 0.3 }, "<")
+        .to(fbMem, { opacity: 0.6, scale: 1, duration: 0.3 }, "<");
+
+      return () => {
+        tl.kill();
+        gsap.set(
+          [
+            ".fallback-bc",
+            ".fallback-strike",
+            ".fallback-mem",
+            ".fallback-arrow",
+          ],
+          { clearProps: "all" },
+        );
+      };
+    });
+  }
+
+  let cleanup: (() => void) | undefined = initLoop();
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initLoop();
+  });
+</script>

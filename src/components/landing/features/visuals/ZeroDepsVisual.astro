@@ -1,0 +1,92 @@
+---
+
+---
+
+<div
+  class="feature-visual relative mb-7 flex flex-1 min-h-40 items-center justify-center overflow-hidden rounded-2xl bg-brand-50/60 ring-1 ring-brand-900/5"
+>
+  <div class="visual-pattern absolute inset-0" aria-hidden="true"></div>
+
+  <div class="relative flex flex-col items-center" aria-hidden="true">
+    <span
+      class="dep-ring pointer-events-none absolute h-24 w-24 rounded-full border border-brand-300/70 opacity-0"
+    >
+    </span>
+    <span
+      class="dep-ring-2 pointer-events-none absolute h-24 w-24 rounded-full border border-brand-300/70 opacity-0"
+    >
+    </span>
+    <span
+      class="dep-zero relative font-display text-7xl font-extrabold text-brand-900"
+    >
+      0
+    </span>
+    <span class="relative mt-1 font-mono text-xs text-brand-400">
+      dependencies
+    </span>
+  </div>
+</div>
+
+<script>
+  import { gsap } from "gsap";
+  import { initReducedMotionLoop } from "../features.animations";
+
+  const initLoop = () => {
+    return initReducedMotionLoop(() => {
+      const depZero  = document.querySelector<HTMLElement>(".dep-zero");
+      const depRing  = document.querySelector<HTMLElement>(".dep-ring");
+      const depRing2 = document.querySelector<HTMLElement>(".dep-ring-2");
+
+      if (!depZero) return;
+
+      const tweens: Array<gsap.core.Timeline | gsap.core.Tween> = [
+        gsap
+          .timeline({ repeat: -1, yoyo: true })
+          .to(depZero, { scale: 1.05, duration: 1.4, ease: "sine.inOut" }),
+      ];
+
+      if (depRing) {
+        tweens.push(
+          gsap.to(depRing, {
+            scale        : 1.7,
+            opacity      : 0,
+            duration     : 1.8,
+            ease         : "power2.out",
+            repeat       : -1,
+            repeatRefresh: true,
+            startAt      : { scale: 0.7, opacity: 0.5 },
+          }),
+        );
+      }
+
+      if (depRing2) {
+        tweens.push(
+          gsap.to(depRing2, {
+            scale        : 1.7,
+            opacity      : 0,
+            duration     : 1.8,
+            delay        : 0.9,
+            ease         : "power2.out",
+            repeat       : -1,
+            repeatRefresh: true,
+            startAt      : { scale: 0.7, opacity: 0.5 },
+          }),
+        );
+      }
+
+      return () => {
+        tweens.forEach((tw) => tw.kill());
+        gsap.set([".dep-zero", ".dep-ring", ".dep-ring-2"], {
+          clearProps: "all",
+        });
+      };
+    });
+  }
+
+  let cleanup: (() => void) | undefined = initLoop();
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initLoop();
+  });
+</script>
