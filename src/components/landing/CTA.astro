@@ -1,6 +1,218 @@
-<section class="px-6 py-16">
-  <h2 class="text-3xl font-bold">CTA</h2>
-  <p class="mt-2 text-brand-700">
-    Llamado a la acción para empezar con tabus-js.
-  </p>
+---
+import { Icon } from "astro-icon/components";
+---
+
+<section
+  class="relative mx-auto max-w-360 overflow-hidden px-6 py-20 lg:px-12 lg:py-28"
+>
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div
+      class="absolute top-1/2 left-1/2 h-128 w-lg -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-400/20 blur-[110px]"
+    >
+    </div>
+  </div>
+
+  <div class="cta-reveal mx-auto mb-12 max-w-2xl text-center lg:mb-14">
+    <h2
+      class="font-display text-3xl font-bold text-brand-900 sm:text-4xl lg:text-5xl"
+    >
+      Deja de pelear con localStorage.
+    </h2>
+
+    <p class="mt-4 text-lg text-brand-700/90">
+      Sincroniza tus pestañas en el tiempo que tardas en leer los docs.
+    </p>
+  </div>
+
+  <div class="cta-reveal mx-auto max-w-3xl">
+    <div
+      class="cta-terminal relative overflow-hidden rounded-3xl border border-brand-900/10 bg-brand-900 shadow-2xl shadow-brand-900/20"
+    >
+      <div
+        class="flex items-center gap-3 border-b border-white/10 bg-white/3 px-5 py-3.5"
+      >
+        <span class="h-3 w-3 rounded-full bg-[#ff5f57]"></span>
+        <span class="h-3 w-3 rounded-full bg-[#febc2e]"></span>
+        <span class="h-3 w-3 rounded-full bg-[#28c840]"></span>
+
+        <span class="ml-2 font-mono text-xs text-brand-300/70">
+          ~/mi-proyecto
+        </span>
+
+        <button
+          type="button"
+          id="cta-copy"
+          class="ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-xs text-brand-300 transition-colors hover:bg-white/10 hover:text-white"
+          data-code="pnpm add tabus-js"
+          aria-label="Copiar comando"
+        >
+          <Icon id="cta-copy-icon" name="lucide:copy" class="h-3.5 w-3.5" />
+          <Icon
+            id="cta-copy-check"
+            name="lucide:check"
+            class="hidden h-3.5 w-3.5 text-green-400"
+          />
+          <span id="cta-copy-label">Copiar</span>
+        </button>
+      </div>
+
+      <div class="px-6 py-10 sm:px-10 sm:py-12 lg:py-14">
+        <div
+          class="cta-terminal-line flex items-baseline gap-3 font-mono text-2xl font-semibold text-brand-100 sm:text-3xl lg:text-[2.5rem]"
+        >
+          <span class="text-teal-400">$</span><span
+            class="inline-flex items-baseline"
+          >
+            <span
+              class="cta-typed inline-block overflow-hidden whitespace-nowrap"
+            >
+              {"pnpm add tabus-js"}
+            </span><span class="cta-cursor inline-block text-brand-300">▍</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-reveal mt-10 flex justify-center">
+    <a
+      href="/docs/getting-started/introduccion"
+      class="group inline-flex items-center gap-2.5 rounded-md bg-brand-600 px-8 py-3 text-base font-semibold text-on-accent shadow-[0_10px_36px_-6px_var(--indigo-glow)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_14px_44px_-6px_var(--indigo-glow-hover)] active:translate-y-0 active:shadow-[0_6px_20px_-6px_var(--indigo-glow-active)] motion-reduce:hover:translate-y-0"
+    >
+      Leer los docs
+      <Icon
+        name="lucide:arrow-right"
+        class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
+      />
+    </a>
+  </div>
 </section>
+
+<style>
+  .cta-cursor {
+    animation: cta-cursor-blink 1s step-end infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-cursor {
+      animation: none;
+    }
+  }
+
+  @keyframes cta-cursor-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  const copyButton = document.querySelector<HTMLButtonElement>("#cta-copy");
+
+  if (copyButton) {
+    const icon  = document.querySelector<HTMLElement>("#cta-copy-icon");
+    const check = document.querySelector<HTMLElement>("#cta-copy-check");
+    const label = document.querySelector<HTMLElement>("#cta-copy-label");
+
+    let resetTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    copyButton.addEventListener("click", async () => {
+      const code = copyButton.dataset.code ?? "";
+
+      try {
+        await navigator.clipboard.writeText(code);
+      } catch {
+        return;
+      }
+
+      icon?.classList.add("hidden");
+      check?.classList.remove("hidden");
+
+      if (label) label.textContent = "Copiado";
+
+      clearTimeout(resetTimeout);
+      resetTimeout = setTimeout(() => {
+        icon?.classList.remove("hidden");
+        check?.classList.add("hidden");
+
+        if (label) label.textContent = "Copiar";
+      }, 1600);
+    });
+  }
+</script>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let cleanup: (() => void) | undefined;
+
+  const initCtaEntrance = (): (() => void) => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const items = gsap.utils.toArray<HTMLElement>(".cta-reveal");
+      if (!items.length) return;
+
+      const typedEl = document.querySelector<HTMLElement>(".cta-typed");
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: items[0],
+          start  : "top 85%",
+          once   : true,
+        },
+      });
+
+      tl.from(items, {
+        opacity : 0,
+        y       : 20,
+        duration: 0.7,
+        ease    : "power3.out",
+        stagger : 0.15,
+      });
+
+      if (typedEl) {
+        tl.from(
+          typedEl,
+          { width: 0, duration: 0.6, ease: "steps(18)" },
+          "-=0.25",
+        );
+      }
+
+      return () => {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+        gsap.set(items, { clearProps: "all" });
+        if (typedEl) gsap.set(typedEl, { clearProps: "all" });
+      };
+    });
+
+    return () => {
+      mm.revert();
+    };
+  };
+
+  const refreshScrollTrigger = (): void => {
+    ScrollTrigger.refresh();
+  };
+
+  cleanup = initCtaEntrance();
+
+  requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
+  window.addEventListener("load", refreshScrollTrigger);
+  document.fonts?.ready?.then(refreshScrollTrigger);
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initCtaEntrance();
+    refreshScrollTrigger();
+  });
+</script>
