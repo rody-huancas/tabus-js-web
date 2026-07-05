@@ -7,7 +7,7 @@ const issuesUrl = `${githubUrl}/issues`;
 
 const productLinks = [
   { label: "Docs", href: "/docs/getting-started/introduccion" },
-  { label: "Demo", href: "/#demo" },
+  { label: "Demo", href: "/#demo", scrollTarget: "demo" },
   { label: "API" , href: "/docs/api/tabus" },
 ];
 
@@ -93,6 +93,7 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
               <li>
                 <a
                   href={link.href}
+                  data-scroll-target={link.scrollTarget}
                   class="text-sm text-brand-600 transition-colors hover:text-brand-900"
                 >
                   {link.label}
