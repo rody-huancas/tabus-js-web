@@ -1,0 +1,115 @@
+---
+
+---
+
+<div
+  class="feature-visual relative flex flex-1 min-h-64 items-center justify-center overflow-hidden rounded-2xl bg-brand-50/60 ring-1 ring-brand-900/5 lg:min-h-0"
+>
+  <div class="visual-pattern absolute inset-0" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute top-1/2 left-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-400/25 blur-[70px]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div
+    class="relative flex w-full items-center justify-between gap-4 px-6 sm:gap-8 sm:px-10 lg:px-8"
+    aria-hidden="true"
+  >
+    <div
+      class="bus-node relative flex flex-col items-center gap-2 rounded-2xl bg-white px-5 py-4 text-center shadow-[0_10px_30px_-8px_rgba(29,37,112,0.2)] ring-1 ring-brand-900/5 sm:px-6 sm:py-5"
+    >
+      <span
+        class="bus-ring-a pointer-events-none absolute inset-0 rounded-2xl opacity-0 ring-2 ring-teal-400/70"
+      >
+      </span>
+      <span class="h-2.5 w-2.5 rounded-full bg-brand-500"></span>
+      <span class="text-sm font-semibold text-brand-700 sm:text-base">
+        Pestaña A
+      </span>
+    </div>
+
+    <div class="bus-track relative h-2 flex-1 rounded-full bg-brand-200/70">
+      <span
+        class="bus-pulse absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-teal-500 shadow-[0_0_18px_4px_rgba(20,184,166,0.55)]"
+      >
+      </span>
+    </div>
+
+    <div
+      class="bus-node relative flex flex-col items-center gap-2 rounded-2xl bg-white px-5 py-4 text-center shadow-[0_10px_30px_-8px_rgba(29,37,112,0.2)] ring-1 ring-brand-900/5 sm:px-6 sm:py-5"
+    >
+      <span
+        class="bus-ring-b pointer-events-none absolute inset-0 rounded-2xl opacity-0 ring-2 ring-teal-400/70"
+      >
+      </span>
+      <span class="h-2.5 w-2.5 rounded-full bg-brand-500"></span>
+      <span class="text-sm font-semibold text-brand-700 sm:text-base">
+        Pestaña B
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bus-pulse {
+    left: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { initReducedMotionLoop } from "../features.animations";
+
+  const initLoop = () => {
+    return initReducedMotionLoop(() => {
+      const busPulse = document.querySelector<HTMLElement>(".bus-pulse");
+      const ringA    = document.querySelector<HTMLElement>(".bus-ring-a");
+      const ringB    = document.querySelector<HTMLElement>(".bus-ring-b");
+
+      if (!busPulse) return;
+
+      const tl = gsap
+        .timeline({ repeat: -1, repeatDelay: 0.5 })
+        .set(busPulse, { left: "0%" })
+        .to(busPulse, {
+          left    : "calc(100% - 1rem)",
+          duration: 1,
+          ease    : "power1.inOut",
+        })
+        .call(() => {
+          if (!ringB) return;
+          gsap.fromTo(
+            ringB,
+            { opacity: 0.8, scale: 1 },
+            { opacity: 0, scale: 1.2, duration: 0.6, ease: "power2.out" },
+          );
+        })
+        .to({}, { duration: 0.3 })
+        .to(busPulse, { left: "0%", duration: 1, ease: "power1.inOut" })
+        .call(() => {
+          if (!ringA) return;
+          gsap.fromTo(
+            ringA,
+            { opacity: 0.8, scale: 1 },
+            { opacity: 0, scale: 1.2, duration: 0.6, ease: "power2.out" },
+          );
+        })
+        .to({}, { duration: 0.3 });
+
+      return () => {
+        tl.kill();
+        gsap.set([".bus-pulse", ".bus-ring-a", ".bus-ring-b"], {
+          clearProps: "all",
+        });
+      };
+    });
+  }
+
+  let cleanup: (() => void) | undefined = initLoop();
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initLoop();
+  });
+</script>
