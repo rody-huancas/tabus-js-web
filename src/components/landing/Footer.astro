@@ -1,4 +1,32 @@
+---
+import { Icon } from "astro-icon/components";
+
+const npmUrl = "https://www.npmjs.com/package/tabus-js";
+const githubUrl = "https://github.com/rody-huancas/tabus";
+---
+
 <footer class="px-6 py-16">
-	<h2 class="text-3xl font-bold">Footer</h2>
-	<p class="mt-2 text-brand-700 dark:text-brand-200">Enlaces y créditos del sitio de tabus-js.</p>
+  <h2 class="text-3xl font-bold">Footer</h2>
+  <p class="mt-2 text-brand-700">Enlaces y créditos del sitio de tabus-js.</p>
+
+  <div class="mt-6 flex flex-wrap items-center gap-2">
+    <a
+      href={githubUrl}
+      target="_blank"
+      rel="noreferrer"
+      class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-100 hover:text-brand-900"
+    >
+      <Icon name="simple-icons:github" class="h-4 w-4" />
+      GitHub
+    </a>
+    <a
+      href={npmUrl}
+      target="_blank"
+      rel="noreferrer"
+      class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-100 hover:text-brand-900"
+    >
+      <Icon name="simple-icons:npm" class="h-4 w-4" />
+      npm
+    </a>
+  </div>
 </footer>
