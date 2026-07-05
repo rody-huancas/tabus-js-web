@@ -1,0 +1,91 @@
+---
+
+---
+
+<div
+  class="feature-visual relative mb-7 flex flex-1 min-h-40 items-center justify-center overflow-hidden rounded-2xl bg-brand-50/60 p-4 ring-1 ring-brand-900/5"
+>
+  <div class="visual-pattern absolute inset-0" aria-hidden="true"></div>
+
+  <div
+    class="relative w-full max-w-60 overflow-hidden rounded-xl bg-brand-900 shadow-lg"
+    aria-hidden="true"
+  >
+    <div class="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
+      <span class="h-2 w-2 rounded-full bg-white/15"></span>
+      <span class="h-2 w-2 rounded-full bg-white/15"></span>
+      <span class="h-2 w-2 rounded-full bg-white/15"></span>
+    </div>
+    <div
+      class="px-3.5 py-3 text-left font-mono text-[0.68rem] leading-relaxed text-brand-200"
+    >
+      <div>
+        <span class="text-brand-400">bus</span>.on(<span class="text-green-400">
+          'cart:add'
+        </span>, (e) =&gt; {"{"}
+      </div>
+      <div class="relative pl-3">
+        e.<span class="typed-caret text-white">▍</span>
+        <div
+          class="typed-dropdown absolute top-4 left-3 z-10 w-28 rounded-md bg-white p-1.5 shadow-lg ring-1 ring-brand-900/10"
+        >
+          <div
+            class="rounded bg-brand-50 px-1.5 py-1 text-[0.62rem] font-semibold text-brand-700"
+          >
+            payload
+          </div>
+        </div>
+      </div>
+      <div class="text-brand-400">{"}"})</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .typed-dropdown {
+    transform-origin: top left;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { initReducedMotionLoop } from "../features.animations";
+
+  const initLoop = () => {
+    return initReducedMotionLoop(() => {
+      const typedCaret    = document.querySelector<HTMLElement>(".typed-caret");
+      const typedDropdown = document.querySelector<HTMLElement>(".typed-dropdown");
+
+      if (!typedCaret || !typedDropdown) return;
+
+      const tl = gsap
+        .timeline({ repeat: -1, repeatDelay: 0.6 })
+        .to(typedDropdown, { opacity: 0, y: -4, duration: 0.3 })
+        .to(typedCaret, {
+          opacity : 0,
+          repeat  : 3,
+          yoyo    : true,
+          duration: 0.25,
+        })
+        .to(typedDropdown, {
+          opacity : 1,
+          y       : 0,
+          duration: 0.3,
+          ease    : "power2.out",
+        })
+        .to({}, { duration: 1.2 });
+
+      return () => {
+        tl.kill();
+        gsap.set([".typed-caret", ".typed-dropdown"], { clearProps: "all" });
+      };
+    });
+  }
+
+  let cleanup: (() => void) | undefined = initLoop();
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initLoop();
+  });
+</script>
