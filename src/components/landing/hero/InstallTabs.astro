@@ -1,0 +1,119 @@
+---
+import { Icon } from "astro-icon/components";
+import { installCommands } from "./install-commands";
+---
+
+<div
+  class="hero-snippet mt-12 w-full max-w-lg overflow-hidden rounded-2xl border border-brand-200/80 bg-white/80 shadow-sm backdrop-blur-sm"
+>
+  <div
+    class="flex items-center gap-1 border-b border-brand-200/70 px-2 pt-2"
+    role="tablist"
+    aria-label="Gestor de paquetes"
+  >
+    <button
+      type="button"
+      role="tab"
+      class="install-tab -mb-px rounded-t-lg border border-b-0 border-transparent px-3.5 py-2 font-mono text-sm text-brand-400 transition-colors data-[active=true]:border-brand-200 data-[active=true]:bg-white data-[active=true]:text-brand-900"
+      data-pm="pnpm"
+      data-cmd={installCommands.pnpm}
+      data-active="true"
+      aria-selected="true"
+    >
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="simple-icons:pnpm" class="h-3.5 w-3.5" />
+        pnpm
+      </span>
+    </button>
+
+    <button
+      type="button"
+      role="tab"
+      class="install-tab -mb-px rounded-t-lg border border-b-0 border-transparent px-3.5 py-2 font-mono text-sm text-brand-400 transition-colors data-[active=true]:border-brand-200 data-[active=true]:bg-white data-[active=true]:text-brand-900"
+      data-pm="npm"
+      data-cmd={installCommands.npm}
+      data-active="false"
+      aria-selected="false"
+    >
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="simple-icons:npm" class="h-3.5 w-3.5" />
+        npm
+      </span>
+    </button>
+
+    <button
+      type="button"
+      role="tab"
+      class="install-tab -mb-px rounded-t-lg border border-b-0 border-transparent px-3.5 py-2 font-mono text-sm text-brand-400 transition-colors data-[active=true]:border-brand-200 data-[active=true]:bg-white data-[active=true]:text-brand-900"
+      data-pm="yarn"
+      data-cmd={installCommands.yarn}
+      data-active="false"
+      aria-selected="false"
+    >
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="simple-icons:yarn" class="h-3.5 w-3.5" />
+        yarn
+      </span>
+    </button>
+
+    <button
+      type="button"
+      role="tab"
+      class="install-tab -mb-px rounded-t-lg border border-b-0 border-transparent px-3.5 py-2 font-mono text-sm text-brand-400 transition-colors data-[active=true]:border-brand-200 data-[active=true]:bg-white data-[active=true]:text-brand-900"
+      data-pm="bun"
+      data-cmd={installCommands.bun}
+      data-active="false"
+      aria-selected="false"
+    >
+      <span class="inline-flex items-center gap-1.5">
+        <Icon name="simple-icons:bun" class="h-3.5 w-3.5" />
+        bun
+      </span>
+    </button>
+  </div>
+
+  <div class="flex items-center gap-4 px-5 py-4">
+    <code
+      id="install-command"
+      class="flex-1 truncate font-mono text-base text-brand-800"
+      >{installCommands.pnpm}</code
+    >
+    <button
+      id="copy-install"
+      type="button"
+      aria-label="Copiar comando de instalación"
+      class="shrink-0 rounded-xl bg-brand-100 px-5 py-2.5 text-sm text-brand-800 transition-colors hover:bg-brand-200"
+    >
+      Copiar
+    </button>
+  </div>
+</div>
+
+<script>
+  const tabs       = document.querySelectorAll<HTMLButtonElement>(".install-tab");
+  const commandEl  = document.getElementById("install-command");
+  const copyButton = document.getElementById("copy-install");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => {
+        const isActive = t === tab;
+        t.dataset.active = String(isActive);
+        t.setAttribute("aria-selected", String(isActive));
+      });
+      if (commandEl) commandEl.textContent = tab.dataset.cmd ?? "";
+    });
+  });
+
+  copyButton?.addEventListener("click", async () => {
+    const command = commandEl?.textContent ?? "";
+    await navigator.clipboard.writeText(command);
+    const original = copyButton.textContent;
+
+    copyButton.textContent = "¡Copiado!";
+    
+    setTimeout(() => {
+      copyButton.textContent = original;
+    }, 1500);
+  });
+</script>
