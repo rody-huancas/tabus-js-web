@@ -79,22 +79,65 @@ const {
             <Icon name="simple-icons:npm" class="h-5 w-5" />
           </a>
 
-          <a
-            id="header-cta"
-            href="/docs/getting-started/introduccion"
-            aria-hidden="true"
-            tabindex="-1"
-            class="group ml-1 inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-on-accent opacity-0 pointer-events-none shadow-[0_3px_12px_-4px_var(--indigo-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--indigo-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--indigo-glow-subtle-active)] motion-reduce:hover:translate-y-0 motion-reduce:duration-0 sm:px-5 sm:py-2.5"
+          <span
+            id="header-cta-wrap"
+            class="header-cta-wrap inline-flex shrink-0 items-center"
           >
-            Empezar
-            <Icon
-              name="lucide:arrow-right"
-              class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
-            />
-          </a>
+            <a
+              id="header-cta"
+              href="/docs/getting-started/introduccion"
+              aria-hidden="true"
+              tabindex="-1"
+              class="group inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-on-accent shadow-[0_3px_12px_-4px_var(--indigo-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--indigo-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--indigo-glow-subtle-active)] motion-reduce:hover:translate-y-0 motion-reduce:duration-0 sm:px-5 sm:py-2.5"
+            >
+              Empezar
+              <Icon
+                name="lucide:arrow-right"
+                class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
+              />
+            </a>
+          </span>
         </div>
       </div>
     </header>
+
+    <style>
+      .header-cta-wrap {
+        max-width: 0;
+        margin-left: 0;
+        overflow: hidden;
+        transition:
+          max-width 1s cubic-bezier(0.16, 1, 0.3, 1),
+          margin-left 1s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .header-cta-wrap.is-visible {
+        max-width: 11rem;
+        margin-left: 0.25rem;
+      }
+
+      #header-cta {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-8px) scale(0.96);
+        transition:
+          opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .header-cta-wrap.is-visible #header-cta {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0) scale(1);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .header-cta-wrap,
+        #header-cta {
+          transition: none;
+        }
+      }
+    </style>
 
     <slot />
 
@@ -104,7 +147,7 @@ const {
         if (!header) return;
         const SCROLL_THRESHOLD = 40;
 
-        function updateHeader() {
+        const updateHeader = () => {
           header.classList.toggle(
             "scrolled",
             window.scrollY > SCROLL_THRESHOLD,
@@ -114,13 +157,14 @@ const {
         updateHeader();
         window.addEventListener("scroll", updateHeader, { passive: true });
 
-        const headerCta = document.getElementById("header-cta");
-        const heroCta = document.getElementById("hero-cta");
-        if (!headerCta || !heroCta) return;
+        const headerCtaWrap = document.getElementById("header-cta-wrap");
+        const headerCta     = document.getElementById("header-cta");
+        const heroCta       = document.getElementById("hero-cta");
 
-        function setHeaderCtaVisible(visible) {
-          headerCta.classList.toggle("opacity-0", !visible);
-          headerCta.classList.toggle("pointer-events-none", !visible);
+        if (!headerCtaWrap || !headerCta || !heroCta) return;
+
+        const setHeaderCtaVisible = (visible) => {
+          headerCtaWrap.classList.toggle("is-visible", visible);
           if (visible) {
             headerCta.removeAttribute("aria-hidden");
             headerCta.removeAttribute("tabindex");
@@ -137,15 +181,17 @@ const {
 
         let ctaObserver;
 
-        function createCtaObserver() {
+        const createCtaObserver = () => {
           if (ctaObserver) ctaObserver.disconnect();
+
           const headerHeight = header.getBoundingClientRect().height;
+          
           ctaObserver = new IntersectionObserver(
             ([entry]) => setHeaderCtaVisible(!entry.isIntersecting),
             { rootMargin: `-${Math.ceil(headerHeight)}px 0px 0px 0px` },
           );
           ctaObserver.observe(heroCta);
-        }
+        };
 
         createCtaObserver();
 
@@ -170,7 +216,7 @@ const {
 
       let cleanup: (() => void) | undefined;
 
-      function initAnimations() {
+      const initAnimations = () => {
         const mm = gsap.matchMedia();
 
         mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -179,13 +225,13 @@ const {
           const demoSection = document.querySelector(".demo-reveal");
           if (demoSection) {
             gsap.from(demoSection, {
-              opacity: 0,
-              y: 40,
-              duration: 0.8,
-              ease: "power2.out",
+              opacity      : 0,
+              y            : 40,
+              duration     : 0.8,
+              ease         : "power2.out",
               scrollTrigger: {
                 trigger: demoSection,
-                start: "top 80%",
+                start  : "top 80%",
               },
             });
           }
