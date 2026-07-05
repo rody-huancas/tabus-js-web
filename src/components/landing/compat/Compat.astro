@@ -39,9 +39,13 @@ const first = frameworks[0];
             data-filename={framework.filename}
             data-raw={framework.raw}
             data-html={framework.code}
-            class="compat-tab group inline-flex items-center gap-2 rounded-xl border border-brand-200/80 bg-white px-4 py-2.5 text-sm font-medium text-brand-500 transition-all hover:border-brand-300 hover:text-brand-700 aria-selected:border-brand-600 aria-selected:bg-brand-600 aria-selected:text-white aria-selected:shadow-[0_8px_20px_-6px_var(--indigo-glow-subtle)]"
+            style={`--tab-color: ${framework.color}`}
+            class="compat-tab group inline-flex items-center gap-2 rounded-xl border border-brand-200/80 bg-white px-4 py-2.5 text-sm font-medium text-brand-500 transition-all hover:border-brand-300 hover:bg-brand-50/60 hover:text-brand-700 aria-selected:border-(--tab-color)/50 aria-selected:bg-(--tab-color)/10 aria-selected:text-brand-900 aria-selected:shadow-[0_8px_20px_-6px_var(--brand-glow-subtle)]"
           >
-            <Icon name={framework.icon} class="h-4 w-4" />
+            <Icon
+              name={framework.icon}
+              class="h-4 w-4 shrink-0 text-(--tab-color) opacity-80 transition-opacity duration-200 group-hover:opacity-100 group-aria-selected:opacity-100"
+            />
             {framework.label}
           </button>
         ))

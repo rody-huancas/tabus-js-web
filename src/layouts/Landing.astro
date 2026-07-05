@@ -19,7 +19,24 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+
+    <script is:inline>
+      (function () {
+        var html = document.documentElement;
+        if (
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: no-preference)").matches
+        ) {
+          html.classList.add("hero-anim-pending");
+          // Safety net: never leave the hero permanently hidden if the
+          // animation script fails to load/run for any reason.
+          window.setTimeout(function () {
+            html.classList.remove("hero-anim-pending");
+          }, 2000);
+        }
+      })();
+    </script>
   </head>
 
   <body class="min-h-screen bg-brand-50 font-sans text-brand-900">
@@ -54,6 +71,7 @@ const {
             >
             <a
               href="#demo"
+              data-scroll-target="demo"
               class="rounded-lg px-3 py-2 transition-colors hover:bg-brand-900/5 hover:text-brand-900"
               >Demo</a
             >
@@ -88,7 +106,7 @@ const {
               href="/docs/getting-started/introduccion"
               aria-hidden="true"
               tabindex="-1"
-              class="group inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-on-accent shadow-[0_3px_12px_-4px_var(--indigo-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--indigo-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--indigo-glow-subtle-active)] motion-reduce:hover:translate-y-0 motion-reduce:duration-0 sm:px-5 sm:py-2.5"
+              class="group inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-on-accent shadow-[0_3px_12px_-4px_var(--brand-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--brand-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--brand-glow-subtle-active)] motion-reduce:hover:translate-y-0 motion-reduce:duration-0 sm:px-5 sm:py-2.5"
             >
               Empezar
               <Icon
@@ -137,9 +155,40 @@ const {
           transition: none;
         }
       }
+
+      .scroll-top-btn {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(0.5rem);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease,
+          background-color 0.2s ease;
+      }
+
+      .scroll-top-btn.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .scroll-top-btn {
+          transition: opacity 0.15s ease;
+        }
+      }
     </style>
 
     <slot />
+
+    <button
+      id="scroll-top"
+      type="button"
+      aria-label="Volver arriba"
+      class="scroll-top-btn fixed right-5 bottom-5 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-600 text-on-accent shadow-[0_8px_24px_-6px_var(--brand-glow-subtle)] hover:bg-brand-500 sm:right-8 sm:bottom-8"
+    >
+      <Icon name="lucide:arrow-up" class="h-5 w-5" />
+    </button>
 
     <script is:inline>
       (function () {
@@ -207,6 +256,62 @@ const {
       })();
     </script>
 
+    <script is:inline>
+      (function () {
+        document.addEventListener("click", function (event) {
+          const trigger = event.target.closest("[data-scroll-target]");
+          if (!trigger) return;
+
+          const targetId = trigger.dataset.scrollTarget;
+          const target   = targetId ? document.getElementById(targetId) : null;
+          if (!target) return;
+
+          event.preventDefault();
+
+          const reduced = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+
+          target.scrollIntoView({
+            behavior: reduced ? "auto" : "smooth",
+            block   : "start",
+          });
+
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname + window.location.search,
+            );
+          }
+        });
+      })();
+    </script>
+
+    <script is:inline>
+      (function () {
+        const scrollTopBtn = document.getElementById("scroll-top");
+        if (!scrollTopBtn) return;
+
+        const SHOW_AT = 100;
+
+        const updateVisibility = () => {
+          scrollTopBtn.classList.toggle("is-visible", window.scrollY > SHOW_AT);
+        };
+
+        updateVisibility();
+        window.addEventListener("scroll", updateVisibility, { passive: true });
+
+        scrollTopBtn.addEventListener("click", () => {
+          const reduced = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+
+          window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+        });
+      })();
+    </script>
+
     <script>
       import { gsap } from "gsap";
       import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -215,12 +320,14 @@ const {
       gsap.registerPlugin(ScrollTrigger);
 
       let cleanup: (() => void) | undefined;
+      let heroPlayed = false;
 
       const initAnimations = () => {
         const mm = gsap.matchMedia();
 
         mm.add("(prefers-reduced-motion: no-preference)", () => {
-          const heroCleanup = initHeroAnimations();
+          const heroCleanup = heroPlayed ? undefined : initHeroAnimations();
+          if (heroCleanup) heroPlayed = true;
 
           const demoSection = document.querySelector(".demo-reveal");
           if (demoSection) {
@@ -237,7 +344,7 @@ const {
           }
 
           return () => {
-            heroCleanup();
+            heroCleanup?.();
           };
         });
 

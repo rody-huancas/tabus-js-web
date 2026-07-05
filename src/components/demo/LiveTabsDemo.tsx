@@ -121,7 +121,7 @@ const DemoWindow = ({ label }: { label: string }) => {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="w-full rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-on-accent shadow-[0_3px_12px_-4px_var(--indigo-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--indigo-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--indigo-glow-subtle-active)] motion-reduce:hover:translate-y-0"
+            className="w-full rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-on-accent shadow-[0_3px_12px_-4px_var(--brand-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--brand-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--brand-glow-subtle-active)] motion-reduce:hover:translate-y-0"
           >
             Agregar al carrito
           </button>
