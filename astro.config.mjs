@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
@@ -42,7 +43,7 @@ export default defineConfig({
             ],
         },
 			],
-  }), react()],
+  }), react(), icon()],
 
   vite: {
     plugins: [tailwindcss()],
