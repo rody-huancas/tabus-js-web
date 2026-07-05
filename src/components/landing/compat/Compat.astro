@@ -1,0 +1,128 @@
+---
+import { Icon } from "astro-icon/components";
+import { frameworks } from "./compat.data";
+
+const first = frameworks[0];
+---
+
+<section class="mx-auto max-w-360 px-6 py-20 lg:px-12 lg:py-28">
+  <div class="compat-reveal mx-auto mb-14 max-w-2xl text-center lg:mb-16">
+    <p class="font-mono text-sm font-semibold text-brand-500">
+      // funciona donde ya trabajas
+    </p>
+
+    <h2 class="mt-4 font-display text-3xl font-bold text-brand-900 sm:text-4xl">
+      Sin framework preferido
+    </h2>
+
+    <p class="mt-4 text-lg text-brand-700/90">
+      Es una clase de JS sobre una API estándar. Envuélvela en un hook, un
+      composable, o úsala pelada.
+    </p>
+  </div>
+
+  <div class="compat-reveal mx-auto max-w-2xl">
+    <div
+      class="compat-tabs flex flex-wrap items-center justify-center gap-2"
+      role="tablist"
+      aria-label="Framework"
+    >
+      {
+        frameworks.map((framework, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`compat-tab-${framework.id}`}
+            aria-selected={index === 0 ? "true" : "false"}
+            aria-controls="compat-panel"
+            data-framework={framework.id}
+            data-filename={framework.filename}
+            data-raw={framework.raw}
+            data-html={framework.code}
+            class="compat-tab group inline-flex items-center gap-2 rounded-xl border border-brand-200/80 bg-white px-4 py-2.5 text-sm font-medium text-brand-500 transition-all hover:border-brand-300 hover:text-brand-700 aria-selected:border-brand-600 aria-selected:bg-brand-600 aria-selected:text-white aria-selected:shadow-[0_8px_20px_-6px_var(--indigo-glow-subtle)]"
+          >
+            <Icon name={framework.icon} class="h-4 w-4" />
+            {framework.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div
+      class="code-window relative mt-6 overflow-hidden rounded-2xl border border-brand-900/10 bg-brand-900 shadow-xl shadow-brand-900/15"
+    >
+      <div
+        class="flex items-center gap-3 border-b border-white/10 bg-white/3 px-4 py-3"
+      >
+        <span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57]"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-[#febc2e]"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-[#28c840]"></span>
+
+        <span
+          id="compat-filename"
+          class="ml-2 font-mono text-xs text-brand-300/70"
+        >
+          {first.filename}
+        </span>
+
+        <button
+          type="button"
+          id="compat-copy"
+          class="ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-xs text-brand-300 transition-colors hover:bg-white/10 hover:text-white"
+          data-code={first.raw}
+          aria-label="Copiar código"
+        >
+          <Icon id="compat-copy-icon" name="lucide:copy" class="h-3.5 w-3.5" />
+          <Icon
+            id="compat-copy-check"
+            name="lucide:check"
+            class="hidden h-3.5 w-3.5 text-green-400"
+          />
+          <span id="compat-copy-label">Copiar</span>
+        </button>
+      </div>
+
+      <pre
+        id="compat-panel"
+        role="tabpanel"
+        aria-labelledby={`compat-tab-${first.id}`}
+        class="compat-code-pre overflow-x-auto px-5 py-5 font-mono text-[0.8rem] leading-relaxed text-brand-200"><code id="compat-code" set:html={first.code} /></pre>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .compat-code-pre {
+      transition: opacity 0.15s ease;
+    }
+
+    .compat-code-pre.compat-fade-out {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  import { initCompatTabs } from "./compat.tabs";
+
+  initCompatTabs();
+</script>
+
+<script>
+  import { initCompatEntrance, refreshScrollTrigger } from "./compat.animations";
+
+  let cleanup: (() => void) | undefined;
+
+  cleanup = initCompatEntrance();
+
+  requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
+  window.addEventListener("load", refreshScrollTrigger);
+  document.fonts?.ready?.then(refreshScrollTrigger);
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initCompatEntrance();
+    refreshScrollTrigger();
+  });
+</script>
