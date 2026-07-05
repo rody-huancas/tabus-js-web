@@ -1,6 +1,8 @@
 import { gsap } from "gsap";
 
 export const initHeroAnimations = (): () => void => {
+  document.documentElement.classList.remove("hero-anim-pending");
+
   const tl = gsap.timeline({
     defaults: { ease: "power2.out", duration: 0.6 },
   });
