@@ -1,8 +1,13 @@
 @import "tailwindcss";
-
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono";
 
 @theme {
+  --font-display: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
   --color-brand-50: #f2f6ff;
   --color-brand-100: #e2eaff;
   --color-brand-200: #c7d6ff;
@@ -15,4 +20,25 @@
   --color-brand-900: #1d2570;
 
   --color-accent: #ff6b4a;
+
+  --color-on-accent: #ffffff;
+}
+
+:root {
+  --indigo-glow: rgb(54 70 230 / 35%);
+  --indigo-glow-hover: rgb(54 70 230 / 50%);
+  --indigo-glow-active: rgb(54 70 230 / 22%);
+
+  --indigo-glow-subtle: rgb(54 70 230 / 16%);
+  --indigo-glow-subtle-hover: rgb(54 70 230 / 28%);
+  --indigo-glow-subtle-active: rgb(54 70 230 / 12%);
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
