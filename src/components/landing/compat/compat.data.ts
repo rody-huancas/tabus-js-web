@@ -8,6 +8,7 @@ export interface Framework {
   id      : string;
   label   : string;
   icon    : string;
+  color   : string;
   filename: string;
   raw     : string;
   code    : string;
@@ -18,6 +19,7 @@ export const frameworks: Framework[] = [
     id      : "react",
     label   : "React",
     icon    : "simple-icons:react",
+    color   : "#61DAFB",
     filename: "useTabSync.ts",
     raw     : `import { useEffect } from 'react'
 import { Tabus } from 'tabus-js'
@@ -46,6 +48,7 @@ export const useTabSync = (onAdd: (id: string) => void) => {
     id      : "vue",
     label   : "Vue",
     icon    : "simple-icons:vuedotjs",
+    color   : "#42B883",
     filename: "useTabSync.ts",
     raw     : `import { onMounted, onUnmounted } from 'vue'
 import { Tabus } from 'tabus-js'
@@ -76,6 +79,7 @@ export const useTabSync = (onAdd: (id: string) => void) => {
     id      : "angular",
     label   : "Angular",
     icon    : "simple-icons:angular",
+    color   : "#DD0031",
     filename: "tab-sync.service.ts",
     raw     : `import { Injectable, OnDestroy } from '@angular/core'
 import { Tabus } from 'tabus-js'
@@ -110,6 +114,7 @@ export class TabSyncService implements OnDestroy {
     id      : "svelte",
     label   : "Svelte",
     icon    : "simple-icons:svelte",
+    color   : "#FF3E00",
     filename: "TabSync.svelte",
     raw     : `import { onMount } from 'svelte'
 import { Tabus } from 'tabus-js'
@@ -134,6 +139,7 @@ onMount(() => {
     id      : "vanilla",
     label   : "Vanilla",
     icon    : "simple-icons:javascript",
+    color   : "#E8B800",
     filename: "main.ts",
     raw     : `import { Tabus } from 'tabus-js'
 
