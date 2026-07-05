@@ -1,32 +1,280 @@
 ---
 import { Icon } from "astro-icon/components";
 
-const npmUrl = "https://www.npmjs.com/package/tabus-js";
-const githubUrl = "https://github.com/rody-huancas/tabus";
+const githubUrl = "https://github.com/rody-huancas/tabus-js";
+const npmUrl    = "https://www.npmjs.com/package/tabus-js";
+const issuesUrl = `${githubUrl}/issues`;
+
+const productLinks = [
+  { label: "Docs", href: "/docs/getting-started/introduccion" },
+  { label: "Demo", href: "/#demo" },
+  { label: "API" , href: "/docs/api/tabus" },
+];
+
+const resourceLinks = [
+  { label: "GitHub", href: githubUrl },
+  { label: "npm", href: npmUrl },
+];
+
+const communityLinks = [{ label: "Issues", href: issuesUrl }];
 ---
 
-<footer class="px-6 py-16">
-  <h2 class="text-3xl font-bold">Footer</h2>
-  <p class="mt-2 text-brand-700">Enlaces y créditos del sitio de tabus-js.</p>
+<footer class="relative overflow-hidden border-t border-brand-900/10 bg-white">
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-16 opacity-[0.035]"
+    >
+      <div class="h-40 w-64 rounded-[2.5rem] bg-brand-900"></div>
+      <div class="h-1.5 w-40 rounded-full bg-brand-900"></div>
+      <div class="h-40 w-64 rounded-[2.5rem] bg-brand-900"></div>
+    </div>
+  </div>
 
-  <div class="mt-6 flex flex-wrap items-center gap-2">
-    <a
-      href={githubUrl}
-      target="_blank"
-      rel="noreferrer"
-      class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-100 hover:text-brand-900"
+  <div class="mx-auto max-w-360 px-6 pt-16 pb-10 lg:px-12 lg:pt-20">
+    <div
+      class="footer-reveal grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-8"
     >
-      <Icon name="simple-icons:github" class="h-4 w-4" />
-      GitHub
-    </a>
-    <a
-      href={npmUrl}
-      target="_blank"
-      rel="noreferrer"
-      class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-100 hover:text-brand-900"
+      <div>
+        <a
+          href="/"
+          class="inline-flex items-center gap-3 font-display text-lg font-bold tracking-tight text-brand-900"
+          aria-label="tabus-js — inicio"
+        >
+          <img
+            src="/tabus-logo.png"
+            alt="Logo de tabus-js"
+            class="h-9 rounded-lg"
+          />
+        </a>
+
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-brand-600">
+          Sincroniza el estado entre pestañas del navegador. Sobre
+          BroadcastChannel, cero dependencias.
+        </p>
+
+        <div
+          class="mt-6 inline-flex items-center gap-2 rounded-xl border border-brand-200/70 bg-brand-50 px-3 py-2 font-mono text-xs text-brand-700"
+        >
+          <span class="text-brand-400">$</span>
+          <span>pnpm add tabus-js</span>
+          <button
+            type="button"
+            id="footer-copy"
+            class="ml-1 rounded-md p-1 text-brand-500 transition-colors hover:bg-brand-100 hover:text-brand-700"
+            data-code="pnpm add tabus-js"
+            aria-label="Copiar comando"
+          >
+            <Icon
+              id="footer-copy-icon"
+              name="lucide:copy"
+              class="h-3.5 w-3.5"
+            />
+            <Icon
+              id="footer-copy-check"
+              name="lucide:check"
+              class="hidden h-3.5 w-3.5 text-green-600"
+            />
+          </button>
+        </div>
+      </div>
+
+      <nav aria-label="Producto">
+        <h3
+          class="font-mono text-xs font-semibold tracking-wide text-brand-400 uppercase"
+        >
+          Producto
+        </h3>
+        <ul class="mt-4 flex flex-col gap-3">
+          {
+            productLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-brand-600 transition-colors hover:text-brand-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Recursos">
+        <h3
+          class="font-mono text-xs font-semibold tracking-wide text-brand-400 uppercase"
+        >
+          Recursos
+        </h3>
+        <ul class="mt-4 flex flex-col gap-3">
+          {
+            resourceLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="text-sm text-brand-600 transition-colors hover:text-brand-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Comunidad">
+        <h3
+          class="font-mono text-xs font-semibold tracking-wide text-brand-400 uppercase"
+        >
+          Comunidad
+        </h3>
+        <ul class="mt-4 flex flex-col gap-3">
+          {
+            communityLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="text-sm text-brand-600 transition-colors hover:text-brand-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <div
+      class="footer-reveal mt-12 flex flex-col items-center gap-4 border-t border-brand-900/10 pt-8 sm:flex-row sm:justify-between"
     >
-      <Icon name="simple-icons:npm" class="h-4 w-4" />
-      npm
-    </a>
+      <p class="text-sm text-brand-500">
+        MIT · hecho por <a
+          href="https://github.com/rody-huancas"
+          target="_blank"
+          rel="noreferrer"
+          class="text-brand-600 hover:text-brand-900"
+        >
+          Rody Huancas
+        </a>
+      </p>
+
+      <div class="flex items-center gap-1">
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Ver repositorio en GitHub"
+          class="rounded-lg p-2 text-brand-500 transition-colors hover:bg-brand-100 hover:text-brand-900"
+        >
+          <Icon name="simple-icons:github" class="h-4 w-4" />
+        </a>
+        <a
+          href={npmUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Ver paquete en npm"
+          class="rounded-lg p-2 text-brand-500 transition-colors hover:bg-brand-100 hover:text-brand-900"
+        >
+          <Icon name="simple-icons:npm" class="h-4 w-4" />
+        </a>
+      </div>
+    </div>
   </div>
 </footer>
+
+<script>
+  const copyButton = document.querySelector<HTMLButtonElement>("#footer-copy");
+
+  if (copyButton) {
+    const icon  = document.querySelector<HTMLElement>("#footer-copy-icon");
+    const check = document.querySelector<HTMLElement>("#footer-copy-check");
+
+    let resetTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    copyButton.addEventListener("click", async () => {
+      const code = copyButton.dataset.code ?? "";
+
+      try {
+        await navigator.clipboard.writeText(code);
+      } catch {
+        return;
+      }
+
+      icon?.classList.add("hidden");
+      check?.classList.remove("hidden");
+      copyButton.setAttribute("aria-label", "Copiado");
+
+      clearTimeout(resetTimeout);
+      resetTimeout = setTimeout(() => {
+        icon?.classList.remove("hidden");
+        check?.classList.add("hidden");
+        copyButton.setAttribute("aria-label", "Copiar comando");
+      }, 1600);
+    });
+  }
+</script>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let cleanup: (() => void) | undefined;
+
+  const initFooterEntrance = (): (() => void) => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const items = gsap.utils.toArray<HTMLElement>(".footer-reveal");
+      if (!items.length) return;
+
+      const revealTween = gsap.from(items, {
+        opacity      : 0,
+        y            : 16,
+        duration     : 0.6,
+        ease         : "power3.out",
+        stagger      : 0.12,
+        scrollTrigger: {
+          trigger: items[0],
+          start  : "top 90%",
+          once   : true,
+        },
+      });
+
+      return () => {
+        revealTween.scrollTrigger?.kill();
+        revealTween.kill();
+        gsap.set(items, { clearProps: "all" });
+      };
+    });
+
+    return () => {
+      mm.revert();
+    };
+  };
+
+  const refreshScrollTrigger = (): void => {
+    ScrollTrigger.refresh();
+  };
+
+  cleanup = initFooterEntrance();
+
+  requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
+  window.addEventListener("load", refreshScrollTrigger);
+  document.fonts?.ready?.then(refreshScrollTrigger);
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initFooterEntrance();
+    refreshScrollTrigger();
+  });
+</script>
