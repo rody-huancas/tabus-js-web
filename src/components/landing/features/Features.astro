@@ -1,0 +1,112 @@
+---
+import BusVisual from "./visuals/BusVisual.astro";
+import TinyVisual from "./visuals/TinyVisual.astro";
+import FeatureCard from "./FeatureCard.astro";
+import FallbackVisual from "./visuals/FallbackVisual.astro";
+import ThrottleVisual from "./visuals/ThrottleVisual.astro";
+import ZeroDepsVisual from "./visuals/ZeroDepsVisual.astro";
+import TypedEventsVisual from "./visuals/TypedEventsVisual.astro";
+import { features } from "./features.data";
+import type { FeatureVisualId } from "./features.data";
+
+const visualComponents: Record<FeatureVisualId, unknown> = {
+  fallback      : FallbackVisual,
+  "typed-events": TypedEventsVisual,
+  throttle      : ThrottleVisual,
+  "zero-deps"   : ZeroDepsVisual,
+  tiny          : TinyVisual,
+};
+---
+
+<section class="mx-auto max-w-360 px-6 py-20 lg:px-12 lg:py-28">
+  <div class="mx-auto mb-14 max-w-2xl text-center lg:mb-16">
+    <h2 class="font-display text-3xl font-bold text-brand-900 sm:text-4xl">
+      Poco, pero lo justo
+    </h2>
+
+    <p class="mt-4 text-lg text-brand-700/90">
+      Sin runtime pesado ni conceptos nuevos. Una clase, dos métodos, y el
+      navegador hace el resto.
+    </p>
+  </div>
+
+  <div
+    class="features-grid grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-10"
+  >
+    <div
+      class="feature-cell group relative flex flex-col gap-8 overflow-hidden rounded-3xl border border-brand-900/5 bg-white p-8 shadow-[0_8px_30px_-12px_rgba(29,37,112,0.12)] transition-colors hover:border-brand-900/10 sm:col-span-2 lg:col-span-2 lg:row-span-2 lg:flex-row lg:items-stretch lg:gap-10 lg:p-11"
+    >
+      <span
+        class="absolute top-6 right-7 z-10 font-mono text-[0.65rem] text-brand-300/70"
+      >
+        01
+      </span>
+
+      <div class="flex flex-col justify-center lg:w-[38%] lg:shrink-0">
+        <h3 class="font-display text-2xl font-bold text-brand-900 lg:text-4xl">
+          BroadcastChannel nativo
+        </h3>
+
+        <p
+          class="mt-4 max-w-md text-base leading-relaxed text-brand-600 lg:text-lg"
+        >
+          Sincroniza el estado entre pestañas con la API nativa del navegador.
+          Sin WebSockets, sin polling, sin servidor intermedio.
+        </p>
+      </div>
+
+      <BusVisual />
+    </div>
+
+    {
+      features.map((feature) => {
+        const Visual = visualComponents[feature.visual] as typeof FallbackVisual;
+
+        return (
+          <FeatureCard
+            number={feature.number}
+            title={feature.title}
+            description={feature.description}
+            class={feature.class}
+          >
+            <Visual />
+          </FeatureCard>
+        );
+      })
+    }
+  </div>
+</section>
+
+<style is:global>
+  .visual-pattern {
+    background-image:
+      linear-gradient(to right, var(--color-brand-200) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-brand-200) 1px, transparent 1px);
+    background-size: 1.25rem 1.25rem;
+    opacity: 0.35;
+    -webkit-mask-image: radial-gradient(
+      ellipse at center,
+      black 35%,
+      transparent 80%
+    );
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%);
+  }
+</style>
+
+<script>
+  import { initFeaturesEntrance, refreshScrollTrigger } from "./features.animations";
+
+  let cleanup: (() => void) | undefined;
+
+  cleanup = initFeaturesEntrance();
+
+  requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
+  window.addEventListener("load", refreshScrollTrigger);
+  document.fonts?.ready?.then(refreshScrollTrigger);
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initFeaturesEntrance();
+    refreshScrollTrigger();
+  });
+</script>
