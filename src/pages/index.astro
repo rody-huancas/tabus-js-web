@@ -1,18 +1,27 @@
 ---
-import Landing from '../layouts/Landing.astro';
-import Hero from '../components/landing/Hero.astro';
-import Features from '../components/landing/Features.astro';
-import CodePreview from '../components/landing/CodePreview.astro';
-import Compat from '../components/landing/Compat.astro';
-import CTA from '../components/landing/CTA.astro';
-import Footer from '../components/landing/Footer.astro';
+import CTA from "../components/landing/CTA.astro";
+import Hero from "../components/landing/hero/Hero.astro";
+import Compat from "../components/landing/Compat.astro";
+import Footer from "../components/landing/Footer.astro";
+import Landing from "../layouts/Landing.astro";
+import Features from "../components/landing/Features.astro";
+import CodePreview from "../components/landing/CodePreview.astro";
+import LiveTabsDemo from "../components/demo/LiveTabsDemo";
 ---
 
 <Landing>
-	<Hero />
-	<Features />
-	<CodePreview />
-	<Compat />
-	<CTA />
-	<Footer />
+  <Hero />
+
+  <section id="demo" class="demo-reveal scroll-mt-24 px-6 py-16">
+    <h2 class="mb-8 text-center text-2xl font-bold text-brand-900">
+      Míralo en vivo
+    </h2>
+    <LiveTabsDemo client:visible />
+  </section>
+
+  <Features />
+  <CodePreview />
+  <Compat />
+  <CTA />
+  <Footer />
 </Landing>
