@@ -1,0 +1,72 @@
+---
+import HeroStats from "./HeroStats.astro";
+import HeroContent from "./HeroContent.astro";
+import InstallTabs from "./InstallTabs.astro";
+import HeroPreview from "./HeroPreview.astro";
+---
+
+<section class="hero-section relative min-h-svh overflow-hidden">
+  <div
+    class="pointer-events-none absolute inset-0 bg-brand-50"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,var(--color-brand-200),transparent_70%)] opacity-60"
+    >
+    </div>
+    <div
+      class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-brand-200)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-brand-200)_1px,transparent_1px)] bg-size-[4rem_4rem] opacity-30"
+    >
+    </div>
+    <div
+      class="absolute top-1/4 -right-32 h-128 w-lg rounded-full bg-brand-400/20 blur-[100px]"
+    >
+    </div>
+    <div
+      class="absolute -bottom-20 -left-20 h-96 w-96 rounded-full bg-accent/15 blur-[80px]"
+    >
+    </div>
+    <div
+      class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-b from-transparent to-brand-50 sm:h-36 lg:h-40"
+    >
+    </div>
+  </div>
+
+  <div
+    class="relative mx-auto flex min-h-svh max-w-360 items-center px-6 pt-24 pb-16 lg:px-12 lg:pt-28 lg:pb-14"
+  >
+    <div
+      class="grid w-full items-center gap-16 lg:grid-cols-2 lg:gap-12 xl:gap-20"
+    >
+      <div class="flex flex-col">
+        <HeroContent />
+        <InstallTabs />
+        <HeroStats />
+      </div>
+
+      <HeroPreview />
+    </div>
+  </div>
+
+  <a
+    href="#demo"
+    class="hero-scroll absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-brand-400 transition-colors hover:text-brand-600 lg:flex"
+  >
+    <span class="text-xs font-medium tracking-widest uppercase"
+      >Demo en vivo</span
+    >
+    <svg
+      class="h-5 w-5 animate-bounce"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M10 4v12M4 10l6 6 6-6"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </a>
+</section>
