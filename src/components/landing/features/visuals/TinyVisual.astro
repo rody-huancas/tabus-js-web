@@ -1,0 +1,68 @@
+---
+
+---
+
+<div
+  class="feature-visual relative mb-7 flex flex-1 min-h-40 items-center justify-center overflow-hidden rounded-2xl bg-brand-50/60 px-6 ring-1 ring-brand-900/5"
+>
+  <div class="visual-pattern absolute inset-0" aria-hidden="true"></div>
+
+  <div class="relative flex w-full max-w-64 flex-col gap-4" aria-hidden="true">
+    <div class="flex items-center gap-3">
+      <span
+        class="w-14 shrink-0 text-right font-mono text-[0.65rem] text-brand-400"
+      >
+        otras
+      </span>
+      <div class="h-3 flex-1 rounded-full bg-brand-200/70"></div>
+      <span class="w-12 shrink-0 font-mono text-[0.65rem] text-brand-300">
+        ~40 kB
+      </span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span
+        class="w-14 shrink-0 text-right font-mono text-[0.65rem] font-semibold text-brand-700"
+      >
+        tabus-js
+      </span>
+      <div class="h-3 flex-1 overflow-hidden rounded-full bg-brand-100">
+        <div class="tiny-bar h-3 w-[6%] rounded-full bg-brand-600"></div>
+      </div>
+      <span
+        class="w-12 shrink-0 font-mono text-[0.65rem] font-semibold text-brand-700"
+      >
+        925 B
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { gsap } from "gsap";
+  import { initReducedMotionLoop } from "../features.animations";
+
+  const initLoop = () => {
+    return initReducedMotionLoop(() => {
+      const tinyBar = document.querySelector<HTMLElement>(".tiny-bar");
+      if (!tinyBar) return;
+
+      const tl = gsap.timeline({ repeat: -1, yoyo: true }).to(tinyBar, {
+        boxShadow: "0 0 16px 3px var(--indigo-glow-subtle-hover)",
+        duration : 1.2,
+        ease     : "sine.inOut",
+      });
+
+      return () => {
+        tl.kill();
+        gsap.set(".tiny-bar", { clearProps: "all" });
+      };
+    });
+  }
+
+  let cleanup: (() => void) | undefined = initLoop();
+
+  document.addEventListener("astro:page-load", () => {
+    cleanup?.();
+    cleanup = initLoop();
+  });
+</script>
