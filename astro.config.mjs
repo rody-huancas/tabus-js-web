@@ -12,8 +12,18 @@ export default defineConfig({
 
   integrations: [
     starlight({
-      title      : "tabus-js",
+      title      : "Tabus.js",
       description: "Bus de mensajes tipado entre pestañas del navegador, con fallback en memoria.",
+      head: [
+        {
+          tag: "link",
+          attrs: {
+            rel: "icon",
+            href: "/favicon.ico",
+            type: "image/x-icon",
+          },
+        },
+      ],
       logo       : {
         src         : "./src/assets/tabus-logo.png",
         alt         : "tabus-js",
