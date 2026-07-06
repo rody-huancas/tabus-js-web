@@ -1,0 +1,51 @@
+---
+title: tabus-js
+description: A typed message bus between browser tabs, with an in-memory fallback. No dependencies, no server.
+template: splash
+hero:
+  title: tabus-js
+  tagline: Sync state across browser tabs in real time. No server, no WebSockets, no extra configuration.
+  actions:
+    - text: Get started
+      link: /en/docs/getting-started/introduccion/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/rody-huancas/tabus-js
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+tabus-js is a dependency-free TypeScript class that sends and receives typed events between tabs of the same browser. It uses `BroadcastChannel` natively and automatically falls back to an in-memory bus when that API isn't available.
+
+## Explore the documentation
+
+<CardGrid stagger>
+	<Card title="Getting started" icon="rocket">
+		Install tabus-js and create your first cross-tab event bus in minutes.
+
+    	[Go to Getting started →](/en/docs/getting-started/introduccion/)
+    </Card>
+    <Card title="Concepts" icon="puzzle">
+    	How it works internally: transports, throttling, lifecycle, and limits.
+
+    	[Go to Concepts →](/en/docs/guias/conceptos/)
+    </Card>
+    <Card title="Integrations" icon="setting">
+    	Idiomatic guides for React, Vue, Angular, Svelte, and Vanilla JS.
+
+    	[Go to Integrations →](/en/docs/integraciones/react/)
+    </Card>
+    <Card title="API reference" icon="open-book">
+    	The `Tabus` class, its options, its types, and its transports, in detail.
+
+    	[Go to Reference →](/en/docs/api/tabus/)
+    </Card>
+    <Card title="Examples" icon="document">
+    	Real-world cases: synchronized logout, shared cart, live cursors, and presence.
+
+    	[Go to Examples →](/en/docs/ejemplos/logout-sincronizado/)
+    </Card>
+
+</CardGrid>
