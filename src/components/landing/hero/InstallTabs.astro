@@ -1,6 +1,14 @@
 ---
 import { Icon } from "astro-icon/components";
 import { installCommands } from "./install-commands";
+import { landing, type Locale } from "../../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <div
@@ -9,7 +17,7 @@ import { installCommands } from "./install-commands";
   <div
     class="flex items-center gap-1 border-b border-brand-200/70 px-2 pt-2"
     role="tablist"
-    aria-label="Gestor de paquetes"
+    aria-label={t.installTabs.ariaPackageManager}
   >
     <button
       type="button"
@@ -97,41 +105,76 @@ import { installCommands } from "./install-commands";
     <button
       id="copy-install"
       type="button"
-      aria-label="Copiar comando de instalación"
+      aria-label={t.installTabs.copyAria}
+      data-copied-label={t.installTabs.copied}
       class="shrink-0 rounded-xl bg-brand-100 px-5 py-2.5 text-sm text-brand-800 transition-colors hover:bg-brand-200 flex items-center justify-center gap-1"
     >
       <Icon name="lucide:copy" class="h-4 w-4" />
-      <span class="sr-only">Copiar comando de instalación</span>
-      <span class="hidden sm:block">Copiar</span>
+      <span class="sr-only">{t.installTabs.copyAria}</span>
+      <span class="hidden sm:block">{t.installTabs.copy}</span>
     </button>
   </div>
 </div>
 
 <script>
-  const tabs       = document.querySelectorAll<HTMLButtonElement>(".install-tab");
-  const commandEl  = document.getElementById("install-command");
-  const copyButton = document.getElementById("copy-install");
+  let cleanup: (() => void) | undefined;
 
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => {
-        const isActive = t === tab;
-        t.dataset.active = String(isActive);
-        t.setAttribute("aria-selected", String(isActive));
-      });
-      if (commandEl) commandEl.textContent = tab.dataset.cmd ?? "";
+  function setup() {
+    const tabs       = document.querySelectorAll<HTMLButtonElement>(".install-tab");
+    const commandEl  = document.getElementById("install-command");
+    const copyButton = document.getElementById("copy-install");
+
+    if (!tabs.length && !copyButton) return;
+
+    const tabCleanups: Array<() => void> = [];
+
+    tabs.forEach((tab) => {
+      const onTabClick = () => {
+        tabs.forEach((t) => {
+          const isActive = t === tab;
+          t.dataset.active = String(isActive);
+          t.setAttribute("aria-selected", String(isActive));
+        });
+        if (commandEl) commandEl.textContent = tab.dataset.cmd ?? "";
+      };
+      tab.addEventListener("click", onTabClick);
+      tabCleanups.push(() => tab.removeEventListener("click", onTabClick));
     });
-  });
 
-  copyButton?.addEventListener("click", async () => {
-    const command = commandEl?.textContent ?? "";
-    await navigator.clipboard.writeText(command);
-    const original = copyButton.textContent;
+    let copyCleanup: (() => void) | undefined;
+    if (copyButton) {
+      let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    copyButton.textContent = "¡Copiado!";
-    
-    setTimeout(() => {
-      copyButton.textContent = original;
-    }, 1500);
+      const onCopyClick = async () => {
+        const command = commandEl?.textContent ?? "";
+        await navigator.clipboard.writeText(command);
+        const original     = copyButton.textContent;
+        const copiedLabel  = copyButton.dataset.copiedLabel ?? original ?? "";
+
+        copyButton.textContent = copiedLabel;
+
+        clearTimeout(resetTimeout);
+        resetTimeout = setTimeout(() => {
+          copyButton.textContent = original;
+        }, 1500);
+      };
+
+      copyButton.addEventListener("click", onCopyClick);
+      copyCleanup = () => {
+        clearTimeout(resetTimeout);
+        copyButton.removeEventListener("click", onCopyClick);
+      };
+    }
+
+    cleanup = () => {
+      tabCleanups.forEach((off) => off());
+      copyCleanup?.();
+    };
+  }
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
   });
 </script>
