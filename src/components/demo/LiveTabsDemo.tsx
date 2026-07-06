@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Tabus } from "tabus-js";
+import { landing, type Locale } from "../../i18n/landing";
 
 type CartEvents = {
   "cart:add": void;
@@ -8,7 +9,7 @@ type CartEvents = {
 
 const CHANNEL = "tabus-demo-cart";
 
-const DemoWindow = ({ label }: { label: string }) => {
+const DemoWindow = ({ label, t }: { label: string; t: (typeof landing)["es"]["demo"] }) => {
   const busRef = useRef<Tabus<CartEvents> | null>(null);
   const pulseTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -38,12 +39,22 @@ const DemoWindow = ({ label }: { label: string }) => {
     bus.on("cart:add", handleAdd);
     bus.on("cart:reset", handleReset);
 
+    // Astro's View Transitions swap the DOM directly, bypassing React's own
+    // unmount lifecycle — so this component's useEffect cleanup below is not
+    // guaranteed to run when navigating away. Without this, the BroadcastChannel
+    // connection would leak and a second live instance would be created when
+    // this island remounts on the next visit. destroy() is idempotent, so it's
+    // safe even if React's cleanup below also runs.
+    const handleBeforeSwap = () => bus.destroy();
+    document.addEventListener("astro:before-swap", handleBeforeSwap);
+
     return () => {
       bus.off("cart:add", handleAdd);
       bus.off("cart:reset", handleReset);
       bus.destroy();
       busRef.current = null;
       if (pulseTimeout.current) clearTimeout(pulseTimeout.current);
+      document.removeEventListener("astro:before-swap", handleBeforeSwap);
     };
   }, []);
 
@@ -75,10 +86,10 @@ const DemoWindow = ({ label }: { label: string }) => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold tracking-wider text-brand-400 uppercase">
-              Carrito compartido
+              {t.cartLabel}
             </p>
             <p className="mt-1 font-display text-lg font-bold text-brand-900">
-              Zapatillas Tabus
+              {t.productName}
             </p>
           </div>
           <span
@@ -94,10 +105,10 @@ const DemoWindow = ({ label }: { label: string }) => {
 
         <div className="rounded-2xl bg-brand-50 p-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-brand-600">Estado sincronizado</span>
+            <span className="text-brand-600">{t.syncedState}</span>
             <span className="flex items-center gap-1.5 font-semibold text-green-600">
               <span className="h-2 w-2 rounded-full bg-green-500" />
-              Activo
+              {t.active}
             </span>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-brand-200">
@@ -108,11 +119,11 @@ const DemoWindow = ({ label }: { label: string }) => {
         <div className="rounded-xl border border-brand-200 px-4 py-3 font-mono text-xs text-brand-700">
           {lastEvent ? (
             <span>
-              <span className="text-brand-400">←</span> recibió {lastEvent}
+              <span className="text-brand-400">←</span> {t.received} {lastEvent}
             </span>
           ) : (
             <span className="text-brand-400">
-              Esperando eventos de la otra pestaña…
+              {t.waiting}
             </span>
           )}
         </div>
@@ -123,7 +134,7 @@ const DemoWindow = ({ label }: { label: string }) => {
             onClick={handleAddToCart}
             className="w-full rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-on-accent shadow-[0_3px_12px_-4px_var(--brand-glow-subtle)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_5px_16px_-4px_var(--brand-glow-subtle-hover)] active:translate-y-0 active:shadow-[0_2px_8px_-4px_var(--brand-glow-subtle-active)] motion-reduce:hover:translate-y-0"
           >
-            Agregar al carrito
+            {t.addToCart}
           </button>
 
           <button
@@ -131,7 +142,7 @@ const DemoWindow = ({ label }: { label: string }) => {
             onClick={handleReset}
             className="w-full rounded-md border border-brand-300/70 bg-white/60 px-4 py-2.5 text-sm font-semibold text-brand-700 backdrop-blur-sm transition-colors hover:border-brand-400 hover:bg-white hover:text-brand-900"
           >
-            Reset
+            {t.reset}
           </button>
         </div>
       </div>
@@ -139,12 +150,14 @@ const DemoWindow = ({ label }: { label: string }) => {
   );
 }
 
-const LiveTabsDemo = () => {
+const LiveTabsDemo = ({ locale = "es" }: { locale?: Locale }) => {
+  const t = landing[locale].demo;
+
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
-        <DemoWindow label="Pestaña A" />
-        <DemoWindow label="Pestaña B" />
+        <DemoWindow label={t.tabA} t={t} />
+        <DemoWindow label={t.tabB} t={t} />
       </div>
 
       <button
@@ -152,7 +165,7 @@ const LiveTabsDemo = () => {
         onClick={() => window.open("/demo")}
         className="mx-auto rounded-md border border-brand-300/70 bg-white/60 px-5 py-2.5 text-sm font-semibold text-brand-700 backdrop-blur-sm transition-colors hover:border-brand-400 hover:bg-white hover:text-brand-900"
       >
-        Ábrela en otra pestaña real
+        {t.openInNewTab}
       </button>
     </div>
   );
