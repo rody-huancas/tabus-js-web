@@ -1,22 +1,30 @@
 ---
 import { Icon } from "astro-icon/components";
+import { landing, localizeHref, type Locale } from "../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 
 const githubUrl = "https://github.com/rody-huancas/tabus-js";
 const npmUrl    = "https://www.npmjs.com/package/tabus-js";
 const issuesUrl = `${githubUrl}/issues`;
 
 const productLinks = [
-  { label: "Docs", href: "/docs/getting-started/introduccion" },
-  { label: "Demo", href: "/#demo", scrollTarget: "demo" },
-  { label: "API" , href: "/docs/api/tabus" },
+  { label: t.footer.docs, href: localizeHref("/docs/getting-started/introduccion", locale) },
+  { label: t.footer.demo, href: localizeHref("/#demo", locale), scrollTarget: "demo" },
+  { label: t.footer.api , href: localizeHref("/docs/api/tabus", locale) },
 ];
 
 const resourceLinks = [
-  { label: "GitHub", href: githubUrl },
-  { label: "npm", href: npmUrl },
+  { label: t.footer.github, href: githubUrl },
+  { label: t.footer.npm, href: npmUrl },
 ];
 
-const communityLinks = [{ label: "Issues", href: issuesUrl }];
+const communityLinks = [{ label: t.footer.issues, href: issuesUrl }];
 ---
 
 <footer class="relative overflow-hidden border-t border-brand-900/10 bg-white">
@@ -39,9 +47,9 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
     >
       <div>
         <a
-          href="/"
+          href={localizeHref("/", locale)}
           class="inline-flex items-center gap-3 font-display text-lg font-bold tracking-tight text-brand-900"
-          aria-label="tabus-js — inicio"
+          aria-label={t.footer.homeAria}
         >
           <img
             src="/tabus-logo.png"
@@ -51,8 +59,7 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
         </a>
 
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-brand-600">
-          Sincroniza el estado entre pestañas del navegador. Sobre
-          BroadcastChannel, cero dependencias.
+          {t.footer.tagline}
         </p>
 
         <div
@@ -65,7 +72,9 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
             id="footer-copy"
             class="ml-1 rounded-md p-1 text-brand-500 transition-colors hover:bg-brand-100 hover:text-brand-700"
             data-code="pnpm add tabus-js"
-            aria-label="Copiar comando"
+            data-copied-label={t.footer.copiedAria}
+            data-copy-label={t.footer.copyAria}
+            aria-label={t.footer.copyAria}
           >
             <Icon
               id="footer-copy-icon"
@@ -81,11 +90,11 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
         </div>
       </div>
 
-      <nav aria-label="Producto">
+      <nav aria-label={t.footer.product}>
         <h3
           class="font-mono text-xs font-semibold tracking-wide text-brand-400 uppercase"
         >
-          Producto
+          {t.footer.product}
         </h3>
         <ul class="mt-4 flex flex-col gap-3">
           {
@@ -104,11 +113,11 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
         </ul>
       </nav>
 
-      <nav aria-label="Recursos">
+      <nav aria-label={t.footer.resources}>
         <h3
           class="font-mono text-xs font-semibold tracking-wide text-brand-400 uppercase"
         >
-          Recursos
+          {t.footer.resources}
         </h3>
         <ul class="mt-4 flex flex-col gap-3">
           {
@@ -128,11 +137,11 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
         </ul>
       </nav>
 
-      <nav aria-label="Comunidad">
+      <nav aria-label={t.footer.community}>
         <h3
           class="font-mono text-xs font-semibold tracking-wide text-brand-400 uppercase"
         >
-          Comunidad
+          {t.footer.community}
         </h3>
         <ul class="mt-4 flex flex-col gap-3">
           {
@@ -157,7 +166,7 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
       class="footer-reveal mt-12 flex flex-col items-center gap-4 border-t border-brand-900/10 pt-8 sm:flex-row sm:justify-between"
     >
       <p class="text-sm text-brand-500">
-        MIT · hecho por <a
+        MIT · {t.footer.madeBy} <a
           href="https://github.com/rody-huancas"
           target="_blank"
           rel="noreferrer"
@@ -172,7 +181,7 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
           href={githubUrl}
           target="_blank"
           rel="noreferrer"
-          aria-label="Ver repositorio en GitHub"
+          aria-label={t.footer.githubAria}
           class="rounded-lg p-2 text-brand-500 transition-colors hover:bg-brand-100 hover:text-brand-900"
         >
           <Icon name="simple-icons:github" class="h-4 w-4" />
@@ -181,7 +190,7 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
           href={npmUrl}
           target="_blank"
           rel="noreferrer"
-          aria-label="Ver paquete en npm"
+          aria-label={t.footer.npmAria}
           class="rounded-lg p-2 text-brand-500 transition-colors hover:bg-brand-100 hover:text-brand-900"
         >
           <Icon name="simple-icons:npm" class="h-4 w-4" />
@@ -192,15 +201,18 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
 </footer>
 
 <script>
-  const copyButton = document.querySelector<HTMLButtonElement>("#footer-copy");
+  let copyCleanup: (() => void) | undefined;
 
-  if (copyButton) {
+  function setupCopyButton() {
+    const copyButton = document.querySelector<HTMLButtonElement>("#footer-copy");
+    if (!copyButton) return;
+
     const icon  = document.querySelector<HTMLElement>("#footer-copy-icon");
     const check = document.querySelector<HTMLElement>("#footer-copy-check");
 
     let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    copyButton.addEventListener("click", async () => {
+    const onClick = async () => {
       const code = copyButton.dataset.code ?? "";
 
       try {
@@ -211,16 +223,28 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
 
       icon?.classList.add("hidden");
       check?.classList.remove("hidden");
-      copyButton.setAttribute("aria-label", "Copiado");
+      copyButton.setAttribute("aria-label", copyButton.dataset.copiedLabel ?? "");
 
       clearTimeout(resetTimeout);
       resetTimeout = setTimeout(() => {
         icon?.classList.remove("hidden");
         check?.classList.add("hidden");
-        copyButton.setAttribute("aria-label", "Copiar comando");
+        copyButton.setAttribute("aria-label", copyButton.dataset.copyLabel ?? "");
       }, 1600);
-    });
+    };
+
+    copyButton.addEventListener("click", onClick);
+    copyCleanup = () => {
+      clearTimeout(resetTimeout);
+      copyButton.removeEventListener("click", onClick);
+    };
   }
+
+  document.addEventListener("astro:page-load", setupCopyButton);
+  document.addEventListener("astro:before-swap", () => {
+    copyCleanup?.();
+    copyCleanup = undefined;
+  });
 </script>
 
 <script>
@@ -267,15 +291,19 @@ const communityLinks = [{ label: "Issues", href: issuesUrl }];
     ScrollTrigger.refresh();
   };
 
-  cleanup = initFooterEntrance();
+  const setup = () => {
+    cleanup?.();
+    cleanup = initFooterEntrance();
+    refreshScrollTrigger();
+  };
 
   requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
   window.addEventListener("load", refreshScrollTrigger);
   document.fonts?.ready?.then(refreshScrollTrigger);
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
     cleanup?.();
-    cleanup = initFooterEntrance();
-    refreshScrollTrigger();
+    cleanup = undefined;
   });
 </script>
