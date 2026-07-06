@@ -34,6 +34,14 @@
   background-color: color-mix(in srgb, var(--tabus-teal) 30%, transparent);
 }
 
+/* Subtle, fast page-fade for Astro View Transitions — kept in sync with
+   src/styles/global.css so docs <-> landing navigation feels uniform. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.2s;
+  animation-timing-function: ease-out;
+}
+
 .sl-markdown-content blockquote {
   border-inline-start: 2px solid var(--tabus-teal);
   background-color: color-mix(in srgb, var(--tabus-teal) 6%, transparent);

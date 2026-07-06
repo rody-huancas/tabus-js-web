@@ -1,5 +1,13 @@
 ---
 import { Icon } from "astro-icon/components";
+import { landing, type Locale } from "../../../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <div
@@ -33,7 +41,7 @@ import { Icon } from "astro-icon/components";
       class="fallback-mem flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-sm font-semibold text-brand-700 opacity-60 ring-1 ring-brand-900/5"
     >
       <Icon name="lucide:hard-drive" class="h-4 w-4" />
-      Memoria
+      {t.features.fallbackVisual.memory}
     </div>
   </div>
 </div>
@@ -82,10 +90,16 @@ import { Icon } from "astro-icon/components";
     });
   }
 
-  let cleanup: (() => void) | undefined = initLoop();
+  let cleanup: (() => void) | undefined;
 
-  document.addEventListener("astro:page-load", () => {
+  const setup = () => {
     cleanup?.();
     cleanup = initLoop();
+  };
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
   });
 </script>

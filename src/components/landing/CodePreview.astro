@@ -1,5 +1,13 @@
 ---
 import { Icon } from "astro-icon/components";
+import { landing, type Locale } from "../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 
 const rawCode = `import { Tabus } from 'tabus-js'
 
@@ -10,12 +18,12 @@ type Events = {
 
 const bus = new Tabus<Events>('shop')
 
-// escucha en las otras pestañas
+// ${t.codePreview.codeComments.listen}
 bus.on('cart:add', ({ id }) => {
   addToCart(id)
 })
 
-// emite desde esta
+// ${t.codePreview.codeComments.emit}
 bus.emit('cart:add', { id: 'sku_42' })`;
 
 const kw  = (s: string) => `<span class="text-brand-400">${s}</span>`;
@@ -33,20 +41,16 @@ const codeHtml = [
   ``,
   `${kw("const")} ${kw("bus")} = ${kw("new")} ${ty("Tabus")}&lt;${ty("Events")}&gt;(${str("'shop'")})`,
   ``,
-  cm("// escucha en las otras pestañas"),
+  cm(`// ${t.codePreview.codeComments.listen}`),
   `${kw("bus")}.on(${str("'cart:add'")}, ({ id }) =&gt; {`,
   `  addToCart(id)`,
   `})`,
   ``,
-  cm("// emite desde esta"),
+  cm(`// ${t.codePreview.codeComments.emit}`),
   `${kw("bus")}.emit(${str("'cart:add'")}, { id: ${str("'sku_42'")} })<span class="code-cursor">▍</span>`,
 ].join("\n");
 
-const bullets = [
-  { icon: "lucide:plug", label: "Creás el canal" },
-  { icon: "lucide:ear", label: "Escuchás en las otras pestañas" },
-  { icon: "lucide:send", label: "Emitís desde la tuya" },
-];
+const bullets = t.codePreview.bullets;
 ---
 
 <section class="mx-auto max-w-360 px-6 py-20 lg:px-12 lg:py-28">
@@ -70,14 +74,16 @@ const bullets = [
             type="button"
             class="code-copy-btn ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-xs text-brand-300 transition-colors hover:bg-white/10 hover:text-white"
             data-code={rawCode}
-            aria-label="Copiar código"
+            data-copied-label={t.codePreview.copied}
+            data-copy-label={t.codePreview.copy}
+            aria-label={t.codePreview.copyAria}
           >
             <Icon name="lucide:copy" class="code-copy-icon h-3.5 w-3.5" />
             <Icon
               name="lucide:check"
               class="code-copy-check hidden h-3.5 w-3.5 text-green-400"
             />
-            <span class="code-copy-label">Copiar</span>
+            <span class="code-copy-label">{t.codePreview.copy}</span>
           </button>
         </div>
 
@@ -88,18 +94,17 @@ const bullets = [
 
     <div class="code-reveal order-1 flex flex-col justify-center lg:order-2">
       <p class="font-mono text-sm font-semibold text-brand-500">
-        // la API completa
+        {t.codePreview.kicker}
       </p>
 
       <h2
         class="mt-4 font-display text-3xl font-bold text-brand-900 sm:text-4xl"
       >
-        Esto es todo lo que escribes
+        {t.codePreview.heading}
       </h2>
 
       <p class="mt-4 max-w-md text-lg leading-relaxed text-brand-700/90">
-        Creas un canal tipado, escuchas en las demás pestañas, emites desde la
-        tuya. No hay paso cuatro.
+        {t.codePreview.subhead}
       </p>
 
       <ul class="mt-8 flex flex-col gap-4">
@@ -143,16 +148,19 @@ const bullets = [
 </style>
 
 <script>
-  const copyButton = document.querySelector<HTMLButtonElement>(".code-copy-btn");
+  let copyCleanup: (() => void) | undefined;
 
-  if (copyButton) {
+  function setupCopyButton() {
+    const copyButton = document.querySelector<HTMLButtonElement>(".code-copy-btn");
+    if (!copyButton) return;
+
     const icon  = copyButton.querySelector<HTMLElement>(".code-copy-icon");
     const check = copyButton.querySelector<HTMLElement>(".code-copy-check");
     const label = copyButton.querySelector<HTMLElement>(".code-copy-label");
 
     let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    copyButton.addEventListener("click", async () => {
+    const onClick = async () => {
       const code = copyButton.dataset.code ?? "";
 
       try {
@@ -164,17 +172,30 @@ const bullets = [
       icon?.classList.add("hidden");
       check?.classList.remove("hidden");
 
-      if (label) label.textContent = "Copiado";
+      if (label) label.textContent = copyButton.dataset.copiedLabel ?? "";
 
       clearTimeout(resetTimeout);
 
       resetTimeout = setTimeout(() => {
         icon?.classList.remove("hidden");
         check?.classList.add("hidden");
-        if (label) label.textContent = "Copiar";
+        if (label) label.textContent = copyButton.dataset.copyLabel ?? "";
       }, 1600);
-    });
+    };
+
+    copyButton.addEventListener("click", onClick);
+
+    copyCleanup = () => {
+      clearTimeout(resetTimeout);
+      copyButton.removeEventListener("click", onClick);
+    };
   }
+
+  document.addEventListener("astro:page-load", setupCopyButton);
+  document.addEventListener("astro:before-swap", () => {
+    copyCleanup?.();
+    copyCleanup = undefined;
+  });
 </script>
 
 <script>
@@ -223,15 +244,19 @@ const bullets = [
     ScrollTrigger.refresh();
   };
 
-  cleanup = initCodePreviewEntrance();
+  const setup = () => {
+    cleanup?.();
+    cleanup = initCodePreviewEntrance();
+    refreshScrollTrigger();
+  };
 
   requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
   window.addEventListener("load", refreshScrollTrigger);
   document.fonts?.ready?.then(refreshScrollTrigger);
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
     cleanup?.();
-    cleanup = initCodePreviewEntrance();
-    refreshScrollTrigger();
+    cleanup = undefined;
   });
 </script>

@@ -1,5 +1,13 @@
 ---
 import { Icon } from "astro-icon/components";
+import { landing, type Locale } from "../../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <div class="hero-visual relative mx-auto w-full max-w-2xl lg:max-w-none">
@@ -31,7 +39,7 @@ import { Icon } from "astro-icon/components";
             stroke-width="1.5"
             stroke-linecap="round"></path>
         </svg>
-        <span class="truncate text-sm text-brand-600">app.mi-proyecto.dev</span>
+        <span class="truncate text-sm text-brand-600">{t.heroPreview.domain}</span>
       </div>
     </div>
 
@@ -40,7 +48,7 @@ import { Icon } from "astro-icon/components";
         class="hero-tab flex items-center gap-2 rounded-t-xl border border-b-0 border-brand-200 bg-white px-4 py-2.5"
       >
         <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-        <span class="text-sm font-medium text-brand-900">Tienda</span>
+        <span class="text-sm font-medium text-brand-900">{t.heroPreview.tabStore}</span>
         <span
           class="hero-counter ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-bold text-white"
           >3</span
@@ -49,12 +57,12 @@ import { Icon } from "astro-icon/components";
       <div
         class="hero-tab-2 flex items-center gap-2 rounded-t-xl px-4 py-2.5 opacity-60"
       >
-        <span class="text-sm text-brand-600">Checkout</span>
+        <span class="text-sm text-brand-600">{t.heroPreview.tabCheckout}</span>
       </div>
       <div
         class="hero-tab-3 flex items-center gap-2 rounded-t-xl px-4 py-2.5 opacity-40"
       >
-        <span class="text-sm text-brand-600">Perfil</span>
+        <span class="text-sm text-brand-600">{t.heroPreview.tabProfile}</span>
       </div>
     </div>
 
@@ -62,20 +70,20 @@ import { Icon } from "astro-icon/components";
       <div class="flex items-center justify-between">
         <div>
           <p class="text-xs tracking-wider text-brand-400 uppercase">
-            Carrito compartido
+            {t.heroPreview.cartLabel}
           </p>
           <p class="mt-1 font-display text-2xl font-bold text-brand-900">
-            Zapatillas Tabus
+            {t.heroPreview.productName}
           </p>
         </div>
       </div>
 
       <div class="rounded-2xl bg-brand-50 p-5">
         <div class="flex items-center justify-between text-sm">
-          <span class="text-brand-600">Estado sincronizado</span>
+          <span class="text-brand-600">{t.heroPreview.syncedState}</span>
           <span class="flex items-center gap-1.5 text-green-600">
             <span class="h-2 w-2 rounded-full bg-green-500"></span>
-            Activo
+            {t.heroPreview.active}
           </span>
         </div>
         <div class="mt-4 h-2.5 overflow-hidden rounded-full bg-brand-200">
@@ -101,7 +109,7 @@ import { Icon } from "astro-icon/components";
           class="hero-event-2 flex items-center gap-3 rounded-xl border border-brand-200 px-4 py-3 text-brand-700"
         >
           <span class="text-brand-400">←</span>
-          <span>Pestaña B recibió el evento</span>
+          <span>{t.heroPreview.eventReceived}</span>
         </div>
       </div>
     </div>
@@ -120,9 +128,9 @@ import { Icon } from "astro-icon/components";
         <p
           class="truncate font-display text-sm font-bold text-brand-900 sm:text-base"
         >
-          Pestaña A → B
+          {t.heroPreview.bubbleTitle}
         </p>
-        <p class="truncate text-xs text-brand-500 sm:text-sm">Evento en ~0ms</p>
+        <p class="truncate text-xs text-brand-500 sm:text-sm">{t.heroPreview.bubbleSubtitle}</p>
       </div>
     </div>
   </div>

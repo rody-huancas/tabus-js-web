@@ -7,24 +7,28 @@ import Landing from "../layouts/Landing.astro";
 import Features from "../components/landing/features/Features.astro";
 import CodePreview from "../components/landing/CodePreview.astro";
 import LiveTabsDemo from "../components/demo/LiveTabsDemo";
+import { landing } from "../i18n/landing";
+
+const locale = "es" as const;
+const t = landing[locale];
 ---
 
-<Landing>
-  <Hero />
+<Landing locale={locale}>
+  <Hero locale={locale} />
 
   <section
     id="demo"
     class="demo-reveal mx-auto max-w-360 scroll-mt-24 px-6 py-16 lg:px-12"
   >
     <h2 class="mb-8 text-center text-2xl font-bold text-brand-900">
-      Míralo en vivo
+      {t.demoSection.heading}
     </h2>
-    <LiveTabsDemo client:visible />
+    <LiveTabsDemo client:visible locale={locale} />
   </section>
 
-  <Features />
-  <CodePreview />
-  <Compat />
-  <CTA />
-  <Footer />
+  <Features locale={locale} />
+  <CodePreview locale={locale} />
+  <Compat locale={locale} />
+  <CTA locale={locale} />
+  <Footer locale={locale} />
 </Landing>

@@ -1,5 +1,12 @@
 ---
+import { landing, type Locale } from "../../../../i18n/landing";
 
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <div
@@ -25,7 +32,7 @@
       </span>
       <span class="h-2.5 w-2.5 rounded-full bg-brand-500"></span>
       <span class="text-sm font-semibold text-brand-700 sm:text-base">
-        Pestaña A
+        {t.features.busVisual.tabA}
       </span>
     </div>
 
@@ -45,7 +52,7 @@
       </span>
       <span class="h-2.5 w-2.5 rounded-full bg-brand-500"></span>
       <span class="text-sm font-semibold text-brand-700 sm:text-base">
-        Pestaña B
+        {t.features.busVisual.tabB}
       </span>
     </div>
   </div>
@@ -106,10 +113,16 @@
     });
   }
 
-  let cleanup: (() => void) | undefined = initLoop();
+  let cleanup: (() => void) | undefined;
 
-  document.addEventListener("astro:page-load", () => {
+  const setup = () => {
     cleanup?.();
     cleanup = initLoop();
+  };
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
   });
 </script>

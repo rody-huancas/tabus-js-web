@@ -1,5 +1,13 @@
 ---
 import { Icon } from "astro-icon/components";
+import { landing, localizeHref, type Locale } from "../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <section
@@ -16,11 +24,11 @@ import { Icon } from "astro-icon/components";
     <h2
       class="font-display text-3xl font-bold text-brand-900 sm:text-4xl lg:text-5xl"
     >
-      Deja de pelear con localStorage.
+      {t.cta.heading}
     </h2>
 
     <p class="mt-4 text-lg text-brand-700/90">
-      Sincroniza tus pestañas en el tiempo que tardas en leer los docs.
+      {t.cta.subhead}
     </p>
   </div>
 
@@ -36,7 +44,7 @@ import { Icon } from "astro-icon/components";
         <span class="h-3 w-3 rounded-full bg-[#28c840]"></span>
 
         <span class="ml-2 font-mono text-xs text-brand-300/70">
-          ~/mi-proyecto
+          {t.cta.terminalPath}
         </span>
 
         <button
@@ -44,7 +52,9 @@ import { Icon } from "astro-icon/components";
           id="cta-copy"
           class="ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-xs text-brand-300 transition-colors hover:bg-white/10 hover:text-white"
           data-code="pnpm add tabus-js"
-          aria-label="Copiar comando"
+          data-copied-label={t.cta.copied}
+          data-copy-label={t.cta.copy}
+          aria-label={t.cta.copyAria}
         >
           <Icon id="cta-copy-icon" name="lucide:copy" class="h-3.5 w-3.5" />
           <Icon
@@ -52,7 +62,7 @@ import { Icon } from "astro-icon/components";
             name="lucide:check"
             class="hidden h-3.5 w-3.5 text-green-400"
           />
-          <span id="cta-copy-label">Copiar</span>
+          <span id="cta-copy-label">{t.cta.copy}</span>
         </button>
       </div>
 
@@ -76,10 +86,10 @@ import { Icon } from "astro-icon/components";
 
   <div class="cta-reveal mt-10 flex justify-center">
     <a
-      href="/docs/getting-started/introduccion"
+      href={localizeHref("/docs/getting-started/introduccion", locale)}
       class="group inline-flex items-center gap-2.5 rounded-md bg-brand-600 px-8 py-3 text-base font-semibold text-on-accent shadow-[0_10px_36px_-6px_var(--brand-glow)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-500 hover:shadow-[0_14px_44px_-6px_var(--brand-glow-hover)] active:translate-y-0 active:shadow-[0_6px_20px_-6px_var(--brand-glow-active)] motion-reduce:hover:translate-y-0"
     >
-      Leer los docs
+      {t.cta.button}
       <Icon
         name="lucide:arrow-right"
         class="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
@@ -112,16 +122,19 @@ import { Icon } from "astro-icon/components";
 </style>
 
 <script>
-  const copyButton = document.querySelector<HTMLButtonElement>("#cta-copy");
+  let copyCleanup: (() => void) | undefined;
 
-  if (copyButton) {
+  function setupCopyButton() {
+    const copyButton = document.querySelector<HTMLButtonElement>("#cta-copy");
+    if (!copyButton) return;
+
     const icon  = document.querySelector<HTMLElement>("#cta-copy-icon");
     const check = document.querySelector<HTMLElement>("#cta-copy-check");
     const label = document.querySelector<HTMLElement>("#cta-copy-label");
 
     let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    copyButton.addEventListener("click", async () => {
+    const onClick = async () => {
       const code = copyButton.dataset.code ?? "";
 
       try {
@@ -133,17 +146,29 @@ import { Icon } from "astro-icon/components";
       icon?.classList.add("hidden");
       check?.classList.remove("hidden");
 
-      if (label) label.textContent = "Copiado";
+      if (label) label.textContent = copyButton.dataset.copiedLabel ?? "";
 
       clearTimeout(resetTimeout);
       resetTimeout = setTimeout(() => {
         icon?.classList.remove("hidden");
         check?.classList.add("hidden");
 
-        if (label) label.textContent = "Copiar";
+        if (label) label.textContent = copyButton.dataset.copyLabel ?? "";
       }, 1600);
-    });
+    };
+
+    copyButton.addEventListener("click", onClick);
+    copyCleanup = () => {
+      clearTimeout(resetTimeout);
+      copyButton.removeEventListener("click", onClick);
+    };
   }
+
+  document.addEventListener("astro:page-load", setupCopyButton);
+  document.addEventListener("astro:before-swap", () => {
+    copyCleanup?.();
+    copyCleanup = undefined;
+  });
 </script>
 
 <script>
@@ -204,15 +229,19 @@ import { Icon } from "astro-icon/components";
     ScrollTrigger.refresh();
   };
 
-  cleanup = initCtaEntrance();
+  const setup = () => {
+    cleanup?.();
+    cleanup = initCtaEntrance();
+    refreshScrollTrigger();
+  };
 
   requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
   window.addEventListener("load", refreshScrollTrigger);
   document.fonts?.ready?.then(refreshScrollTrigger);
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
     cleanup?.();
-    cleanup = initCtaEntrance();
-    refreshScrollTrigger();
+    cleanup = undefined;
   });
 </script>

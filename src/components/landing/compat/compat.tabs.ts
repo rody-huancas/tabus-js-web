@@ -1,4 +1,4 @@
-export const initCompatTabs = (): void => {
+export const initCompatTabs = (): (() => void) => {
   const tabs = Array.from(
     document.querySelectorAll<HTMLButtonElement>(".compat-tab"),
   );
@@ -11,6 +11,9 @@ export const initCompatTabs = (): void => {
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
+
+  const cleanups: Array<() => void> = [];
+  let fadeTimeout: ReturnType<typeof setTimeout> | undefined;
 
   if (tabs.length && codeEl && filenameEl && panelEl) {
     const applyFramework = (tab: HTMLButtonElement) => {
@@ -33,17 +36,20 @@ export const initCompatTabs = (): void => {
       }
 
       panelEl.classList.add("compat-fade-out");
-      window.setTimeout(() => {
+      clearTimeout(fadeTimeout);
+      fadeTimeout = setTimeout(() => {
         applyFramework(tab);
         panelEl.classList.remove("compat-fade-out");
       }, 150);
     };
 
     tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
+      const onClick = () => {
         if (tab.getAttribute("aria-selected") === "true") return;
         selectTab(tab);
-      });
+      };
+      tab.addEventListener("click", onClick);
+      cleanups.push(() => tab.removeEventListener("click", onClick));
     });
   }
 
@@ -52,9 +58,12 @@ export const initCompatTabs = (): void => {
     const check = document.querySelector<HTMLElement>("#compat-copy-check");
     const label = document.querySelector<HTMLElement>("#compat-copy-label");
 
+    const originalLabel = label?.textContent ?? "";
+    const copiedLabel   = copyButton.dataset.copiedLabel ?? originalLabel;
+
     let resetTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    copyButton.addEventListener("click", async () => {
+    const onCopyClick = async () => {
       const code = copyButton.dataset.code ?? "";
 
       try {
@@ -66,15 +75,26 @@ export const initCompatTabs = (): void => {
       icon?.classList.add("hidden");
       check?.classList.remove("hidden");
 
-      if (label) label.textContent = "Copiado";
+      if (label) label.textContent = copiedLabel;
 
       clearTimeout(resetTimeout);
       resetTimeout = setTimeout(() => {
         icon?.classList.remove("hidden");
         check?.classList.add("hidden");
-        
-        if (label) label.textContent = "Copiar";
+
+        if (label) label.textContent = originalLabel;
       }, 1600);
+    };
+
+    copyButton.addEventListener("click", onCopyClick);
+    cleanups.push(() => {
+      clearTimeout(resetTimeout);
+      copyButton.removeEventListener("click", onCopyClick);
     });
   }
+
+  return () => {
+    clearTimeout(fadeTimeout);
+    cleanups.forEach((off) => off());
+  };
 };
