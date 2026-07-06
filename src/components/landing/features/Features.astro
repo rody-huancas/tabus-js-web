@@ -6,8 +6,16 @@ import FallbackVisual from "./visuals/FallbackVisual.astro";
 import ThrottleVisual from "./visuals/ThrottleVisual.astro";
 import ZeroDepsVisual from "./visuals/ZeroDepsVisual.astro";
 import TypedEventsVisual from "./visuals/TypedEventsVisual.astro";
-import { features } from "./features.data";
+import { featuresMeta } from "./features.data";
 import type { FeatureVisualId } from "./features.data";
+import { landing, type Locale } from "../../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 
 const visualComponents: Record<FeatureVisualId, unknown> = {
   fallback      : FallbackVisual,
@@ -21,12 +29,11 @@ const visualComponents: Record<FeatureVisualId, unknown> = {
 <section class="mx-auto max-w-360 px-6 py-20 lg:px-12 lg:py-28">
   <div class="mx-auto mb-14 max-w-2xl text-center lg:mb-16">
     <h2 class="font-display text-3xl font-bold text-brand-900 sm:text-4xl">
-      Poco, pero lo justo
+      {t.features.heading}
     </h2>
 
     <p class="mt-4 text-lg text-brand-700/90">
-      Sin runtime pesado ni conceptos nuevos. Una clase, dos métodos, y el
-      navegador hace el resto.
+      {t.features.subhead}
     </p>
   </div>
 
@@ -44,32 +51,32 @@ const visualComponents: Record<FeatureVisualId, unknown> = {
 
       <div class="flex flex-col justify-center lg:w-[38%] lg:shrink-0">
         <h3 class="font-display text-2xl font-bold text-brand-900 lg:text-4xl">
-          BroadcastChannel nativo
+          {t.features.highlight.title}
         </h3>
 
         <p
           class="mt-4 max-w-md text-base leading-relaxed text-brand-600 lg:text-lg"
         >
-          Sincroniza el estado entre pestañas con la API nativa del navegador.
-          Sin WebSockets, sin polling, sin servidor intermedio.
+          {t.features.highlight.description}
         </p>
       </div>
 
-      <BusVisual />
+      <BusVisual locale={locale} />
     </div>
 
     {
-      features.map((feature) => {
+      featuresMeta.map((feature) => {
         const Visual = visualComponents[feature.visual] as typeof FallbackVisual;
+        const copy = t.features.items[feature.visual];
 
         return (
           <FeatureCard
             number={feature.number}
-            title={feature.title}
-            description={feature.description}
+            title={copy.title}
+            description={copy.description}
             class={feature.class}
           >
-            <Visual />
+            <Visual locale={locale} />
           </FeatureCard>
         );
       })
@@ -98,15 +105,24 @@ const visualComponents: Record<FeatureVisualId, unknown> = {
 
   let cleanup: (() => void) | undefined;
 
-  cleanup = initFeaturesEntrance();
+  // astro:page-load already fires on the very first load too (not just on
+  // soft navigations), so this is the sole init trigger — calling setup()
+  // both immediately and on astro:page-load double-ran everything on cold
+  // load, which is what caused overlapping GSAP timelines elsewhere on this
+  // page and is avoided here defensively too.
+  const setup = () => {
+    cleanup?.();
+    cleanup = initFeaturesEntrance();
+    refreshScrollTrigger();
+  };
 
   requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
   window.addEventListener("load", refreshScrollTrigger);
   document.fonts?.ready?.then(refreshScrollTrigger);
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
     cleanup?.();
-    cleanup = initFeaturesEntrance();
-    refreshScrollTrigger();
+    cleanup = undefined;
   });
 </script>
