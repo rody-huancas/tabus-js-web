@@ -33,12 +33,7 @@ export const initHeroAnimations = (): () => void => {
       "-=0.6",
     )
     .from(".hero-bubble", { opacity: 0, x: 30, y: -20, duration: 0.5 }, "-=0.4")
-    .from(
-      ".hero-code-card",
-      { opacity: 0, x: -30, y: 20, duration: 0.5 },
-      "-=0.35",
-    )
-    .from(".hero-event", { opacity: 0, x: -20, duration: 0.4 }, "-=0.2")
+    .from(".hero-event", { opacity: 0, x: -20, duration: 0.4 }, "-=0.35")
     .from(".hero-event-2", { opacity: 0, x: -20, duration: 0.4 }, "-=0.25")
     .from(".hero-scroll", { opacity: 0, duration: 0.4 }, "-=0.1");
 
