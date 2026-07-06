@@ -1,0 +1,49 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono";
+
+:root {
+  --sl-font     : "Inter Variable", system-ui,    sans-serif;
+  --sl-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --sl-color-accent-low : #17335e;
+  --sl-color-accent     : #4e8ae4;
+  --sl-color-accent-high: #b0cef5;
+  --sl-color-green-low  : #115a49;
+  --sl-color-green      : #27c79e;
+  --sl-color-green-high : #c2f2e2;
+  --tabus-teal          : #14ab86;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low : #d6e6fa;
+  --sl-color-accent     : #1f66c4;
+  --sl-color-accent-high: #17335e;
+  --sl-color-green-low  : #c2f2e2;
+  --sl-color-green      : #0d8c6d;
+  --sl-color-green-high : #0f4a3c;
+  --tabus-teal          : #0d8c6d;
+}
+
+:is(h1, h2, h3, h4, h5, h6),
+.site-title {
+  font-family: "Bricolage Grotesque Variable", var(--__sl-font);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--tabus-teal) 30%, transparent);
+}
+
+.sl-markdown-content blockquote {
+  border-inline-start: 2px solid var(--tabus-teal);
+  background-color: color-mix(in srgb, var(--tabus-teal) 6%, transparent);
+  padding: 0.75rem 1rem;
+}
+
+.sl-markdown-content th {
+  border-bottom: 2px solid var(--sl-color-accent);
+}
+
+.sl-markdown-content tbody tr:hover {
+  background-color: color-mix(in srgb, var(--sl-color-accent) 6%, transparent);
+}

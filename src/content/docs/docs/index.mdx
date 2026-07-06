@@ -1,38 +1,51 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
+title: tabus-js
+description: Bus de mensajes tipado entre pestañas del navegador, con fallback en memoria. Sin dependencias, sin servidor.
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  title: tabus-js
+  tagline: Sincroniza el estado entre pestañas del navegador en tiempo real. Sin servidor, sin WebSockets, sin configuración extra.
   actions:
-    - text: Example Guide
-      link: /docs/guides/example/
+    - text: Empezar
+      link: /docs/getting-started/introduccion/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+    - text: Ver en GitHub
+      link: https://github.com/rody-huancas/tabus-js
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## Next steps
+tabus-js es una clase TypeScript sin dependencias que envía y recibe eventos tipados entre pestañas del mismo navegador. Usa `BroadcastChannel` de forma nativa y cae automáticamente a un bus en memoria cuando esa API no está disponible.
+
+## Explora la documentación
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+	<Card title="Empezar" icon="rocket">
+		Instala tabus-js y crea tu primer bus de eventos entre pestañas en minutos.
+
+    	[Ir a Empezar →](/docs/getting-started/introduccion/)
+    </Card>
+    <Card title="Conceptos" icon="puzzle">
+    	Cómo funciona por dentro: transportes, throttling, ciclo de vida y límites.
+
+    	[Ir a Conceptos →](/docs/guias/conceptos/)
+    </Card>
+    <Card title="Integraciones" icon="setting">
+    	Guías idiomáticas para React, Vue, Angular, Svelte y Vanilla JS.
+
+    	[Ir a Integraciones →](/docs/integraciones/react/)
+    </Card>
+    <Card title="Referencia de API" icon="open-book">
+    	La clase `Tabus`, sus opciones, sus tipos y sus transportes, en detalle.
+
+    	[Ir a Referencia →](/docs/api/tabus/)
+    </Card>
+    <Card title="Ejemplos" icon="document">
+    	Casos reales: logout sincronizado, carrito compartido, cursores en vivo y presencia.
+
+    	[Ir a Ejemplos →](/docs/ejemplos/logout-sincronizado/)
+    </Card>
+
 </CardGrid>

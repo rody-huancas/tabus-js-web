@@ -47,12 +47,7 @@ html {
   font-family: var(--font-sans);
 }
 
-/*
- * Hides the hero's GSAP-animated elements for the first frame so there's no
- * flash of fully-visible content before the entrance timeline sets its own
- * "from" styles. Toggled by an inline blocking script in Landing.astro and
- * removed by hero.animations.ts once the timeline actually starts.
- */
+
 @media (prefers-reduced-motion: no-preference) {
   html.hero-anim-pending .hero-badge,
   html.hero-anim-pending .hero-headline span,
