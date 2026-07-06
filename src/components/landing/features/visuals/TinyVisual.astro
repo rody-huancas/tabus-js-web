@@ -1,5 +1,12 @@
 ---
+import { landing, type Locale } from "../../../../i18n/landing";
 
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <div
@@ -12,7 +19,7 @@
       <span
         class="w-14 shrink-0 text-right font-mono text-[0.65rem] text-brand-400"
       >
-        otras
+        {t.features.tinyVisual.others}
       </span>
       <div class="h-3 flex-1 rounded-full bg-brand-200/70"></div>
       <span class="w-12 shrink-0 font-mono text-[0.65rem] text-brand-300">
@@ -59,10 +66,16 @@
     });
   }
 
-  let cleanup: (() => void) | undefined = initLoop();
+  let cleanup: (() => void) | undefined;
 
-  document.addEventListener("astro:page-load", () => {
+  const setup = () => {
     cleanup?.();
     cleanup = initLoop();
+  };
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
   });
 </script>
