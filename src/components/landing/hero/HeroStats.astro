@@ -1,5 +1,12 @@
 ---
+import { landing, type Locale } from "../../../i18n/landing";
 
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <div class="hero-stats mt-12 flex flex-wrap gap-6 lg:gap-10">
@@ -7,20 +14,20 @@
     <p class="font-display text-3xl font-bold text-brand-900 lg:text-4xl">
       925 B
     </p>
-    <p class="mt-1 text-sm font-medium text-brand-500">Min + gzip</p>
+    <p class="mt-1 text-sm font-medium text-brand-500">{t.heroStats.minGzip}</p>
   </div>
 
   <div class="w-px self-stretch bg-brand-200"></div>
 
   <div>
     <p class="font-display text-3xl font-bold text-brand-900 lg:text-4xl">0</p>
-    <p class="mt-1 text-sm font-medium text-brand-500">Dependencias</p>
+    <p class="mt-1 text-sm font-medium text-brand-500">{t.heroStats.dependencies}</p>
   </div>
 
   <div class="w-px self-stretch bg-brand-200"></div>
-  
+
   <div>
     <p class="font-display text-3xl font-bold text-brand-900 lg:text-4xl">0</p>
-    <p class="mt-1 text-sm font-medium text-brand-500">Servidores</p>
+    <p class="mt-1 text-sm font-medium text-brand-500">{t.heroStats.servers}</p>
   </div>
 </div>
