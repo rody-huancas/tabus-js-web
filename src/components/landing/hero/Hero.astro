@@ -3,6 +3,14 @@ import HeroStats from "./HeroStats.astro";
 import HeroContent from "./HeroContent.astro";
 import InstallTabs from "./InstallTabs.astro";
 import HeroPreview from "./HeroPreview.astro";
+import { landing, type Locale } from "../../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 ---
 
 <section class="hero-section relative min-h-svh overflow-hidden">
@@ -27,12 +35,12 @@ import HeroPreview from "./HeroPreview.astro";
       class="grid w-full items-center gap-16 lg:grid-cols-2 lg:gap-12 xl:gap-20"
     >
       <div class="flex flex-col">
-        <HeroContent />
-        <InstallTabs />
-        <HeroStats />
+        <HeroContent locale={locale} />
+        <InstallTabs locale={locale} />
+        <HeroStats locale={locale} />
       </div>
 
-      <HeroPreview />
+      <HeroPreview locale={locale} />
     </div>
   </div>
 
@@ -42,7 +50,7 @@ import HeroPreview from "./HeroPreview.astro";
     class="hero-scroll absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-brand-400 transition-colors hover:text-brand-600 lg:flex"
   >
     <span class="text-xs font-medium tracking-widest uppercase"
-      >Demo en vivo</span
+      >{t.hero.scrollHint}</span
     >
     <svg
       class="h-5 w-5 animate-bounce"
