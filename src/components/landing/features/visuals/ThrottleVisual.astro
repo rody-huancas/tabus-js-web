@@ -86,10 +86,16 @@ import { Icon } from "astro-icon/components";
     });
   }
 
-  let cleanup: (() => void) | undefined = initLoop();
+  let cleanup: (() => void) | undefined;
 
-  document.addEventListener("astro:page-load", () => {
+  const setup = () => {
     cleanup?.();
     cleanup = initLoop();
+  };
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
   });
 </script>
