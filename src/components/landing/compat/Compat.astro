@@ -1,6 +1,14 @@
 ---
 import { Icon } from "astro-icon/components";
 import { frameworks } from "./compat.data";
+import { landing, type Locale } from "../../../i18n/landing";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "es" } = Astro.props;
+const t = landing[locale];
 
 const first = frameworks[0];
 ---
@@ -8,16 +16,15 @@ const first = frameworks[0];
 <section class="mx-auto max-w-360 px-6 py-20 lg:px-12 lg:py-28">
   <div class="compat-reveal mx-auto mb-14 max-w-2xl text-center lg:mb-16">
     <p class="font-mono text-sm font-semibold text-brand-500">
-      // funciona donde ya trabajas
+      {t.compat.kicker}
     </p>
 
     <h2 class="mt-4 font-display text-3xl font-bold text-brand-900 sm:text-4xl">
-      Sin framework preferido
+      {t.compat.heading}
     </h2>
 
     <p class="mt-4 text-lg text-brand-700/90">
-      Es una clase de JS sobre una API estándar. Envuélvela en un hook, un
-      composable, o úsala directamente.
+      {t.compat.subhead}
     </p>
   </div>
 
@@ -25,7 +32,7 @@ const first = frameworks[0];
     <div
       class="compat-tabs flex flex-wrap items-center justify-center gap-2"
       role="tablist"
-      aria-label="Framework"
+      aria-label={t.compat.tabsAria}
     >
       {
         frameworks.map((framework, index) => (
@@ -74,7 +81,8 @@ const first = frameworks[0];
           id="compat-copy"
           class="ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-xs text-brand-300 transition-colors hover:bg-white/10 hover:text-white"
           data-code={first.raw}
-          aria-label="Copiar código"
+          data-copied-label={t.compat.copied}
+          aria-label={t.compat.copyAria}
         >
           <Icon id="compat-copy-icon" name="lucide:copy" class="h-3.5 w-3.5" />
           <Icon
@@ -82,7 +90,7 @@ const first = frameworks[0];
             name="lucide:check"
             class="hidden h-3.5 w-3.5 text-green-400"
           />
-          <span id="compat-copy-label">Copiar</span>
+          <span id="compat-copy-label">{t.compat.copy}</span>
         </button>
       </div>
 
@@ -110,7 +118,18 @@ const first = frameworks[0];
 <script>
   import { initCompatTabs } from "./compat.tabs";
 
-  initCompatTabs();
+  let cleanup: (() => void) | undefined;
+
+  const setup = () => {
+    cleanup?.();
+    cleanup = initCompatTabs();
+  };
+
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
+    cleanup?.();
+    cleanup = undefined;
+  });
 </script>
 
 <script>
@@ -118,15 +137,19 @@ const first = frameworks[0];
 
   let cleanup: (() => void) | undefined;
 
-  cleanup = initCompatEntrance();
+  const setup = () => {
+    cleanup?.();
+    cleanup = initCompatEntrance();
+    refreshScrollTrigger();
+  };
 
   requestAnimationFrame(() => requestAnimationFrame(refreshScrollTrigger));
   window.addEventListener("load", refreshScrollTrigger);
   document.fonts?.ready?.then(refreshScrollTrigger);
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:page-load", setup);
+  document.addEventListener("astro:before-swap", () => {
     cleanup?.();
-    cleanup = initCompatEntrance();
-    refreshScrollTrigger();
+    cleanup = undefined;
   });
 </script>
