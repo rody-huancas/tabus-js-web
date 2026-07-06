@@ -12,41 +12,86 @@ export default defineConfig({
 
   integrations: [
     starlight({
-      title : "tabus-js",
+      title      : "tabus-js",
+      description: "Bus de mensajes tipado entre pestañas del navegador, con fallback en memoria.",
+      logo       : {
+        src         : "./src/assets/tabus-logo.png",
+        alt         : "tabus-js",
+        replacesTitle: true,
+      },
+      customCss: ["./src/styles/starlight.css"],
       social: [
         {
           icon : "github",
           label: "GitHub",
-          href : "https://github.com/withastro/starlight",
+          href : "https://github.com/rody-huancas/tabus-js",
         },
       ],
       sidebar: [
         {
-          label: "Getting started",
+          label: "Empezar",
           items: [
             {
               label: "Introducción",
               slug : "docs/getting-started/introduccion",
             },
             { label: "Instalación", slug: "docs/getting-started/instalacion" },
-            { label: "Quick start", slug: "docs/getting-started/quick-start" },
+            { label: "Inicio rápido", slug: "docs/getting-started/quick-start" },
           ],
         },
         {
-          label: "Guías",
+          label: "Conceptos",
           items: [
-            { label: "Conceptos", slug: "docs/guias/conceptos" },
-            { label: "Throttle", slug: "docs/guias/throttle" },
-            { label: "React", slug: "docs/guias/react" },
+            { label: "Cómo funciona", slug: "docs/guias/conceptos" },
+            { label: "Transportes", slug: "docs/guias/transportes" },
+            {
+              label: "Eventos de ciclo de vida",
+              slug : "docs/guias/eventos-ciclo-vida",
+            },
+            { label: "Throttling", slug: "docs/guias/throttle" },
+            { label: "Consideraciones y límites", slug: "docs/guias/limites" },
           ],
         },
         {
-          label: "API",
-          items: [{ label: "tabus", slug: "docs/api/tabus" }],
+          label: "Integraciones",
+          items: [
+            { label: "React", slug: "docs/integraciones/react" },
+            { label: "Vue", slug: "docs/integraciones/vue" },
+            { label: "Angular", slug: "docs/integraciones/angular" },
+            { label: "Svelte", slug: "docs/integraciones/svelte" },
+            { label: "Vanilla", slug: "docs/integraciones/vanilla" },
+          ],
+        },
+        {
+          label: "Referencia de API",
+          items: [
+            { label: "Clase Tabus", slug: "docs/api/tabus" },
+            { label: "Opciones", slug: "docs/api/opciones" },
+            { label: "Tipos", slug: "docs/api/tipos" },
+            { label: "Transportes", slug: "docs/api/transportes" },
+            { label: "Exports", slug: "docs/api/exports" },
+          ],
         },
         {
           label: "Ejemplos",
-          items: [{ label: "Ejemplos", slug: "docs/ejemplos" }],
+          items: [
+            {
+              label: "Logout sincronizado",
+              slug : "docs/ejemplos/logout-sincronizado",
+            },
+            {
+              label: "Carrito compartido",
+              slug : "docs/ejemplos/carrito-compartido",
+            },
+            {
+              label: "Cursor en tiempo real",
+              slug : "docs/ejemplos/cursor-tiempo-real",
+            },
+            {
+              label: "Detección de presencia",
+              slug : "docs/ejemplos/presencia-pestanas",
+            },
+          ],
         },
       ],
     }),
