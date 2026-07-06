@@ -47,6 +47,14 @@ html {
   font-family: var(--font-sans);
 }
 
+/* Subtle, fast page-fade for Astro View Transitions — kept in sync with
+   src/styles/starlight.css so landing <-> docs navigation feels uniform. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.2s;
+  animation-timing-function: ease-out;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   html.hero-anim-pending .hero-badge,
